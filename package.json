@@ -1,5 +1,5 @@
 {
-  "name": "penta-tree",
+  "name": "ennea-tree",
   "version": "1.0.0",
   "description": "Immutable tilemap quad-tree with support for mega-tiles",
   "main": "lib/index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/mariusGundersen/penta-tree.git"
+    "url": "git+ssh://git@github.com/mariusGundersen/ennea-tree.git"
   },
   "keywords": [
     "immutable",
@@ -20,9 +20,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mariusGundersen/penta-tree/issues"
+    "url": "https://github.com/mariusGundersen/ennea-tree/issues"
   },
-  "homepage": "https://github.com/mariusGundersen/penta-tree#readme",
+  "homepage": "https://github.com/mariusGundersen/ennea-tree#readme",
   "devDependencies": {
     "ava": "^0.16.0",
     "babel-cli": "^6.16.0",
