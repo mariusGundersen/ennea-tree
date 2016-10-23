@@ -6,10 +6,7 @@ export default function clear(tree, {top, left, width=1, height=1, right=left+wi
   }
 
   if(tree.data !== null){
-    return {
-      ...tree,
-      data: null
-    };
+    return null;
   }
 
   const halfSize = tree.size/2;
