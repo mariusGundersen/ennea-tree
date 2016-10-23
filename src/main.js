@@ -6,6 +6,7 @@ import isEmpty from './isEmpty.js';
 import getIterator from './getIterator.js';
 import setUnsafe from './setUnsafe.js';
 import createNode from './createNode.js';
+import clearBranch from './clearBranch.js';
 
 export {
   get,
@@ -16,5 +17,6 @@ export {
   getIterator,
   setUnsafe,
   createNode,
-  createNode as createTree
+  createNode as createTree,
+  clearBranch
 };
