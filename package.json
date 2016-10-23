@@ -2,7 +2,7 @@
   "name": "ennea-tree",
   "version": "1.0.0",
   "description": "Immutable tilemap quad-tree with support for mega-tiles",
-  "main": "lib/index.js",
+  "main": "lib/main.js",
   "scripts": {
     "test": "ava",
     "compile": "babel -d lib src",
