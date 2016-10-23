@@ -21,7 +21,7 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
     });
   }
 
-  if(top < halfSize && right >= halfSize){
+  if(top < halfSize && right > halfSize){
     yield* getIterator(tree.topRight, {
       top,
       left: max(left) - halfSize,
@@ -30,7 +30,7 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
     });
   }
 
-  if(bottom >= halfSize && left < halfSize){
+  if(bottom > halfSize && left < halfSize){
     yield* getIterator(tree.bottomLeft, {
       top: max(top) - halfSize,
       left,
@@ -39,7 +39,7 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
     });
   }
 
-  if(bottom >= halfSize && right >= halfSize){
+  if(bottom > halfSize && right > halfSize){
     yield* getIterator(tree.bottomRight, {
       top: max(top) - halfSize,
       left: max(left) - halfSize,
