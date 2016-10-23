@@ -1,14 +1,20 @@
 import get from './get.js';
 import set from './set.js';
 import clear from './clear.js';
+import getAll from './getAll.js';
+import isEmpty from './isEmpty.js';
 import getIterator from './getIterator.js';
+import setUnsafe from './setUnsafe.js';
+import createNode from './createNode.js';
 
-export {get, set, clear, getIterator};
-
-export function isEmpty(tree, area){
-  return getAll(tree, area).length === 0;
-}
-
-export function getAll(tree, area){
-  return [...getIterator(tree, area)];
-}
+export {
+  get,
+  set,
+  clear,
+  getAll,
+  isEmpty,
+  getIterator,
+  setUnsafe,
+  createNode,
+  createNode as createTree
+};
