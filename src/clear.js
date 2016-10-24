@@ -82,6 +82,7 @@ export default function clear(tree, {top, left, width=1, height=1, right=left+wi
 
   return {
     size: tree.size,
+    data: null,
     top: tops,
     left: lefts,
     right: rights,
