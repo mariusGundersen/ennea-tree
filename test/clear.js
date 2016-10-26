@@ -155,6 +155,78 @@ test('clear bottom', t => {
   t.is(clear(tree, area), null);
 });
 
+test('clear one of two vertical', t => {
+  const tree = {
+    ...createNode(2),
+    topLeft: {
+      ...createNode(1),
+      data: 'top'
+    },
+    bottomLeft: {
+      ...createNode(1),
+      data: 'bottom'
+    }
+  };
+
+  const area = coords(0, 0);
+  t.not(clear(tree, area), null);
+  t.is(clear(tree, area).bottomLeft.data, 'bottom');
+});
+
+test('clear one of two horizontal', t => {
+  const tree = {
+    ...createNode(2),
+    topLeft: {
+      ...createNode(1),
+      data: 'left'
+    },
+    topRight: {
+      ...createNode(1),
+      data: 'right'
+    }
+  };
+
+  const area = coords(0, 0);
+  t.not(clear(tree, area), null);
+  t.is(clear(tree, area).topRight.data, 'right');
+});
+
+test('clear one of two vertical', t => {
+  const tree = {
+    ...createNode(2),
+    topLeft: {
+      ...createNode(1),
+      data: 'top'
+    },
+    bottomLeft: {
+      ...createNode(1),
+      data: 'bottom'
+    }
+  };
+
+  const area = coords(0, 1);
+  t.not(clear(tree, area), null);
+  t.is(clear(tree, area).topLeft.data, 'top');
+});
+
+test('clear one of two horizontal', t => {
+  const tree = {
+    ...createNode(2),
+    topLeft: {
+      ...createNode(1),
+      data: 'left'
+    },
+    topRight: {
+      ...createNode(1),
+      data: 'right'
+    }
+  };
+
+  const area = coords(1, 0);
+  t.not(clear(tree, area), null);
+  t.is(clear(tree, area).topLeft.data, 'left');
+});
+
 function coords(left, top, width=1, height=1){
   return {
     top,

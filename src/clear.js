@@ -19,21 +19,21 @@ export default function clear(tree, {top, left, width=1, height=1, right=left+wi
       right: min(right),
       bottom: min(bottom)
     }) : tree.topLeft;
-  const topRight = top < halfSize && right >= halfSize
+  const topRight = top < halfSize && right > halfSize
     ? clear(tree.topRight, {
       top,
       left: max(left) - halfSize,
       right: right - halfSize,
       bottom: min(bottom)
     }) : tree.topRight;
-  const bottomLeft = bottom >= halfSize && left < halfSize
+  const bottomLeft = bottom > halfSize && left < halfSize
     ? clear(tree.bottomLeft, {
       top: max(top) - halfSize,
       left,
       right: min(right),
       bottom: bottom - halfSize
     }) : tree.bottomLeft;
-  const bottomRight = bottom >= halfSize && right >= halfSize
+  const bottomRight = bottom > halfSize && right > halfSize
     ? clear(tree.bottomRight, {
       top: max(top) - halfSize,
       left: max(left) - halfSize,
