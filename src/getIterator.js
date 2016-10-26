@@ -6,7 +6,11 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
   }
 
   if(tree.data !== null){
-    return yield tree.data;
+    return yield {
+      data: tree.data,
+      top: 0,
+      left: 0
+    };
   }
 
   const halfSize = tree.size/2;
@@ -48,41 +52,36 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
     });
   }
 
+  const area = {top, left, right, bottom};
   if(tree.center !== null){
-    if(intersect(tree.center, {top, left, right, bottom})){
-      yield tree.center.data;
-    }
+    yield* getIntersections([tree.center], area);
   }
 
   if(top < halfSize){
-    for(const box of tree.top){
-      if(intersect(box, {top, left, right, bottom})){
-        yield box.data;
-      }
-    }
+    yield* getIntersections(tree.top, area);
   }
 
   if(left < halfSize){
-    for(const box of tree.left){
-      if(intersect(box, {top, left, right, bottom})){
-        yield box.data;
-      }
-    }
+    yield* getIntersections(tree.left, area);
   }
 
   if(right >= halfSize){
-    for(const box of tree.right){
-      if(intersect(box, {top, left, right, bottom})){
-        yield box.data;
-      }
-    }
+    yield* getIntersections(tree.right, area);
   }
 
   if(bottom >= halfSize){
-    for(const box of tree.bottom){
-      if(intersect(box, {top, left, right, bottom})){
-        yield box.data;
+    yield* getIntersections(tree.bottom, area);
+  }
+}
+
+function* getIntersections(boxes, area){
+    for(const box of boxes){
+      if(intersect(box, area)){
+        yield {
+          data: box.data,
+          top: area.top - box.top,
+          left: area.left - box.left
+        };
       }
     }
-  }
 }

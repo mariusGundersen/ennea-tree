@@ -1,10 +1,12 @@
 import test from 'ava';
 
 import getIterator from '../src/getIterator.js';
+import getAll from '../src/getAll.js';
+import isEmpty from '../src/isEmpty.js';
 import createNode from '../src/createNode.js';
 
 test('null', t => {
-  t.true(isEmpty(getIterator(null, {})));
+  t.true(isEmpty(null, {}));
 });
 
 test('data', t => {
@@ -162,7 +164,7 @@ test('not top left', t => {
     bottomRight: {size:1, data:'bottomRight'}
   };
   const area = coords(0, 0);
-  t.true(isEmpty(getIterator(tree, area)));
+  t.true(isEmpty(tree, area));
 });
 
 test('not top right', t => {
@@ -173,7 +175,7 @@ test('not top right', t => {
     bottomRight: {size:1, data:'bottomRight'}
   };
   const area = coords(1, 0);
-  t.true(isEmpty(getIterator(tree, area)));
+  t.true(isEmpty(tree, area));
 });
 
 test('not bottom left', t => {
@@ -184,7 +186,7 @@ test('not bottom left', t => {
     bottomRight: {size:1, data:'bottomRight'}
   };
   const area = coords(0, 1);
-  t.true(isEmpty(getIterator(tree, area)));
+  t.true(isEmpty(tree, area));
 });
 
 test('not bottom right', t => {
@@ -195,19 +197,11 @@ test('not bottom right', t => {
     bottomLeft: {size:1, data:'bottomLeft'}
   };
   const area = coords(1, 1);
-  t.true(isEmpty(getIterator(tree, area)));
+  t.true(isEmpty(tree, area));
 });
 
-function isEmpty(iterator){
-  const first = iterator.next();
-  if(!first.done){
-    console.log(first);
-  }
-  return first.done;
-}
-
 function getArray(tree, area){
-  return [...getIterator(tree, area)];
+  return getAll(tree, area).map(x => x.data);
 }
 
 function coords(left, top, width=1, height=1){
