@@ -54,27 +54,27 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
 
   const area = {top, left, right, bottom};
   if(tree.center !== null){
-    yield* getIntersections([tree.center], area);
+    yield* getIntersections(area, tree.center);
   }
 
   if(top < halfSize){
-    yield* getIntersections(tree.top, area);
+    yield* getIntersections(area, ...tree.top);
   }
 
   if(left < halfSize){
-    yield* getIntersections(tree.left, area);
+    yield* getIntersections(area, ...tree.left);
   }
 
   if(right > halfSize){
-    yield* getIntersections(tree.right, area);
+    yield* getIntersections(area, ...tree.right);
   }
 
   if(bottom > halfSize){
-    yield* getIntersections(tree.bottom, area);
+    yield* getIntersections(area, ...tree.bottom);
   }
 }
 
-function* getIntersections(boxes, area){
+function* getIntersections(area, ...boxes){
     for(const box of boxes){
       if(intersect(box, area)){
         yield {
