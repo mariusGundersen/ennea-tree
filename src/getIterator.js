@@ -65,11 +65,11 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
     yield* getIntersections(tree.left, area);
   }
 
-  if(right >= halfSize){
+  if(right > halfSize){
     yield* getIntersections(tree.right, area);
   }
 
-  if(bottom >= halfSize){
+  if(bottom > halfSize){
     yield* getIntersections(tree.bottom, area);
   }
 }

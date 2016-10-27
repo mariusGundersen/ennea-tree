@@ -49,10 +49,10 @@ export default function clear(tree, {top, left, width=1, height=1, right=left+wi
   const lefts = left < halfSize
     ? tree.left.filter(box => !intersect(box, {top, left, right, bottom}))
     : tree.left;
-  const rights = right >= halfSize
+  const rights = right > halfSize
     ? tree.right.filter(box => !intersect(box, {top, left, right, bottom}))
     : tree.right;
-  const bottoms = bottom >= halfSize
+  const bottoms = bottom > halfSize
     ? tree.bottom.filter(box => !intersect(box, {top, left, right, bottom}))
     : tree.bottom;
 
