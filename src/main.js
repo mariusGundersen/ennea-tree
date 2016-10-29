@@ -7,6 +7,7 @@ import getIterator from './getIterator.js';
 import setUnsafe from './setUnsafe.js';
 import createNode from './createNode.js';
 import clearBranch from './clearBranch.js';
+import diff from './diff.js';
 
 export {
   get,
@@ -18,5 +19,6 @@ export {
   setUnsafe,
   createNode,
   createNode as createTree,
-  clearBranch
+  clearBranch,
+  diff
 };
