@@ -8,6 +8,7 @@ import setUnsafe from './setUnsafe.js';
 import createNode from './createNode.js';
 import clearBranch from './clearBranch.js';
 import diff from './diff.js';
+import update from './update.js';
 
 export {
   get,
@@ -20,5 +21,6 @@ export {
   createNode,
   createNode as createTree,
   clearBranch,
-  diff
+  diff,
+  update
 };
