@@ -5,7 +5,7 @@ import update from '../src/update.js';
 
 test('null', t => {
   const updater = update(null, null);
-  updater.update(0, 0);
+  updater.update({top:0, left:0});
   t.is(updater.result(), null);
 });
 
@@ -15,13 +15,14 @@ test('data', t => {
     ...createNode(1),
     data: 'old'
   };
-  const updater = update(tree, (old, pos, loc) => {
+  const context = {};
+  const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
     t.deepEqual(pos, {top: 0, left: 0});
-    t.deepEqual(loc, {top: 0, left: 0});
+    t.is(ctx, context);
     return 'new';
   });
-  updater.update(0, 0);
+  updater.update({top: 0, left: 0}, context);
   const result = updater.result();
   t.not(result, null);
   t.not(tree, result);
@@ -29,21 +30,20 @@ test('data', t => {
 });
 
 test('data changed second time', t => {
-  t.plan(9);
+  t.plan(7);
   let data = 'old';
   const tree = {
     ...createNode(1),
     data
   };
-  const updater = update(tree, (old, pos, loc) => {
+  const updater = update(tree, (old, ctx, pos) => {
     t.is(old, data);
     t.deepEqual(pos, {top: 0, left: 0});
-    t.deepEqual(loc, {top: 0, left: 0});
     data = 'new';
     return data;
   });
-  updater.update(0, 0);
-  updater.update(0, 0);
+  updater.update({top: 0, left: 0});
+  updater.update({top: 0, left: 0});
   const result = updater.result();
   t.not(result, null);
   t.not(tree, result);
@@ -58,9 +58,9 @@ test('convenient result', t => {
   };
   const updater = update(tree, old => old+1);
   const result = updater.result([
-    {top: 0, left: 0},
-    {top: 0, left: 0},
-    {top: 0, left: 0}
+    {area: {top: 0, left: 0}},
+    {area: {top: 0, left: 0}},
+    {area: {top: 0, left: 0}}
   ]);
   t.not(result, null);
   t.not(tree, result);
@@ -75,13 +75,14 @@ test('topLeft', t => {
       data: 'old'
     }
   };
-  const updater = update(tree, (old, pos, loc) => {
+  const context = {};
+  const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
+    t.is(ctx, context);
     t.deepEqual(pos, {top: 0, left: 0});
-    t.deepEqual(loc, {top: 0, left: 0});
     return 'new';
   });
-  updater.update(0, 0);
+  updater.update({top: 0, left: 0}, context);
   const result = updater.result();
   t.not(tree, result);
   t.not(tree.topLeft, result.topLeft);
@@ -96,13 +97,14 @@ test('topRight', t => {
       data: 'old'
     }
   };
-  const updater = update(tree, (old, pos, loc) => {
+  const context = {};
+  const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
-    t.deepEqual(pos, {top: 0, left: 1});
-    t.deepEqual(loc, {top: 0, left: 0});
+    t.is(ctx, context);
+    t.deepEqual(pos, {top: 0, left: 0});
     return 'new';
   });
-  updater.update(0, 1);
+  updater.update({top: 0, left: 1}, context);
   const result = updater.result();
   t.not(tree, result);
   t.not(tree.topRight, result.topRight);
@@ -117,13 +119,14 @@ test('bottomLeft', t => {
       data: 'old'
     }
   };
-  const updater = update(tree, (old, pos, loc) => {
+  const context = {};
+  const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
-    t.deepEqual(pos, {top: 1, left: 0});
-    t.deepEqual(loc, {top: 0, left: 0});
+    t.is(ctx, context);
+    t.deepEqual(pos, {top: 0, left: 0});
     return 'new';
   });
-  updater.update(1, 0);
+  updater.update({top: 1, left: 0}, context);
   const result = updater.result();
   t.not(tree, result);
   t.not(tree.bottomLeft, result.bottomLeft);
@@ -138,13 +141,14 @@ test('bottomRight', t => {
       data: 'old'
     }
   };
-  const updater = update(tree, (old, pos, loc) => {
+  const context = {};
+  const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
-    t.deepEqual(pos, {top: 1, left: 1});
-    t.deepEqual(loc, {top: 0, left: 0});
+    t.is(ctx, context);
+    t.deepEqual(pos, {top: 0, left: 0});
     return 'new';
   });
-  updater.update(1, 1);
+  updater.update({top: 1, left: 1}, context);
   const result = updater.result();
   t.not(tree, result);
   t.not(tree.bottomRight, result.bottomRight);
@@ -172,7 +176,7 @@ test('topLeft only', t => {
     }
   };
   const updater = update(tree, _ => 'new');
-  updater.update(0, 0);
+  updater.update({top: 0, left: 0});
   const result = updater.result();
   t.not(tree, result);
   t.not(tree.topLeft, result.topLeft);
@@ -202,7 +206,7 @@ test('topRight only', t => {
     }
   };
   const updater = update(tree, _ => 'new');
-  updater.update(0, 1);
+  updater.update({top: 0, left: 1});
   const result = updater.result();
   t.not(tree, result);
   t.is(tree.topLeft, result.topLeft);
@@ -232,7 +236,7 @@ test('bottomLeft only', t => {
     }
   };
   const updater = update(tree, _ => 'new');
-  updater.update(1, 0);
+  updater.update({top: 1, left: 0});
   const result = updater.result();
   t.not(tree, result);
   t.is(tree.topLeft, result.topLeft);
@@ -262,7 +266,7 @@ test('bottomRight only', t => {
     }
   };
   const updater = update(tree, _ => 'new');
-  updater.update(1, 1);
+  updater.update({top: 1, left: 1});
   const result = updater.result();
   t.not(tree, result);
   t.is(tree.topLeft, result.topLeft);
@@ -283,14 +287,15 @@ test('center', t => {
       data: 'old'
     }
   };
-  const updater = update(tree, (old, pos, loc) => {
+  const context = {};
+  const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
-    t.is(pos.top, 2);
-    t.is(pos.left, 2);
-    t.deepEqual(loc, {top: 1, left: 1});
+    t.is(pos.top, 1);
+    t.is(pos.left, 1);
+    t.is(ctx, context);
     return 'new';
   });
-  updater.update(2, 2);
+  updater.update({top: 2, left: 2}, context);
   const result = updater.result();
   t.not(result, null);
   t.not(tree, result);
@@ -309,14 +314,15 @@ test('top', t => {
       data: 'old'
     }]
   };
-  const updater = update(tree, (old, pos, loc) => {
+  const context = {};
+  const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
     t.is(pos.top, 1);
-    t.is(pos.left, 2);
-    t.deepEqual(loc, {top: 1, left: 1});
+    t.is(pos.left, 1);
+    t.is(ctx, context);
     return 'new';
   });
-  updater.update(1, 2);
+  updater.update({top: 1, left: 2}, context);
   const result = updater.result();
   t.not(result, null);
   t.not(tree, result);
