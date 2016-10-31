@@ -59,31 +59,31 @@ export function* updateGenerator(tree, getData){
     let bottomRight = null;
     let change = null;
     while(change = yield){
-      if(tree.center !== null && intersect(change.area, tree.center)){
+      if(center !== null && intersect(change.area, center)){
         center = {
           ...center,
-          data: getData(center.data, change.context, {top: change.area.top - tree.center.top, left: change.area.left - tree.center.left})
+          data: getData(center.data, change.context, {top: change.area.top - center.top, left: change.area.left - center.left})
         };
-      }else if(change.area.top < halfSize && tree.top.some(t => intersect(change.area, t))){
-        top = tree.top.map(t => intersect(change.area, t)
+      }else if(change.area.top < halfSize && top.some(t => intersect(change.area, t))){
+        top = top.map(t => intersect(change.area, t)
           ? {
             ...t,
             data: getData(t.data, change.context, {top: change.area.top - t.top, left: change.area.left - t.left})
           } : t);
-      }else if(change.area.left < halfSize && tree.left.some(t => intersect(change.area, t))){
-        left = tree.left.map(t => intersect(change.area, t)
+      }else if(change.area.left < halfSize && left.some(t => intersect(change.area, t))){
+        left = left.map(t => intersect(change.area, t)
           ? {
             ...t,
             data: getData(t.data, change.context, {top: change.area.top - t.top, left: change.area.left - t.left})
           } : t);
-      }else if(change.area.left >= halfSize && tree.right.some(t => intersect(change.area, t))){
-        right = tree.right.map(t => intersect(change.area, t)
+      }else if(change.area.left >= halfSize && right.some(t => intersect(change.area, t))){
+        right = right.map(t => intersect(change.area, t)
           ? {
             ...t,
             data: getData(t.data, change.context, {top: change.area.top - t.top, left: change.area.left - t.left})
           } : t);
-      }else if(change.area.right >= halfSize && tree.bottom.some(t => intersect(change.area, t))){
-        bottom = tree.bottom.map(t => intersect(change.area, t)
+      }else if(change.area.right >= halfSize && bottom.some(t => intersect(change.area, t))){
+        bottom = bottom.map(t => intersect(change.area, t)
           ? {
             ...t,
             data: getData(t.data, change.context, {top: change.area.top - t.top, left: change.area.left - t.left})
