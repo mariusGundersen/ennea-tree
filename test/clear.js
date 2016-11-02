@@ -6,13 +6,23 @@ import createNode from '../src/createNode.js';
 test('null', t => {
   const tree = null;
   const area = {};
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, []);
 });
 
 test('data', t => {
   const tree = {data: 'hello'};
   const area = {};
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+    data: 'hello',
+    top: 0,
+    left: 0,
+    width: 1,
+    height: 1
+  }]);
 });
 
 test('clear miss', t => {
@@ -24,7 +34,9 @@ test('clear miss', t => {
     }
   };
   const area = coords(8, 0);
-  t.is(clear(tree, area), tree);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, tree);
+  t.deepEqual(cleared, []);
 });
 
 test('clear topLeft', t => {
@@ -36,7 +48,15 @@ test('clear topLeft', t => {
     }
   };
   const area = coords(0, 0);
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+    data: 'hello',
+    top: 0,
+    left: 0,
+    width: 1,
+    height: 1
+  }]);
 });
 
 test('clear topRight', t => {
@@ -48,7 +68,15 @@ test('clear topRight', t => {
     }
   };
   const area = coords(1, 0);
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+    data: 'hello',
+    top: 0,
+    left: 1,
+    width: 1,
+    height: 1
+  }]);
 });
 
 test('clear bottomLeft', t => {
@@ -60,7 +88,15 @@ test('clear bottomLeft', t => {
     }
   };
   const area = coords(0, 1);
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+    data: 'hello',
+    top: 1,
+    left: 0,
+    width: 1,
+    height: 1
+  }]);
 });
 
 test('clear bottomRight', t => {
@@ -72,7 +108,15 @@ test('clear bottomRight', t => {
     }
   };
   const area = coords(1, 1);
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+    data: 'hello',
+    top: 1,
+    left: 1,
+    width: 1,
+    height: 1
+  }]);
 });
 
 test('clear center', t => {
@@ -88,7 +132,15 @@ test('clear center', t => {
   };
 
   const area = coords(0, 0);
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+      top: 0,
+      left: 0,
+      width: 2,
+      height: 2,
+      data: 'hello'
+    }]);
 });
 
 test('clear top', t => {
@@ -104,7 +156,15 @@ test('clear top', t => {
   };
 
   const area = coords(0, 0);
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+      top: 0,
+      left: 0,
+      width: 2,
+      height: 1,
+      data: 'hello'
+    }]);
 });
 
 test('clear left', t => {
@@ -120,7 +180,15 @@ test('clear left', t => {
   };
 
   const area = coords(0, 0);
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+      top: 0,
+      left: 0,
+      width: 1,
+      height: 2,
+      data: 'hello'
+    }]);
 });
 
 test('clear right', t => {
@@ -136,7 +204,15 @@ test('clear right', t => {
   };
 
   const area = coords(1, 0);
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+      top: 0,
+      left: 1,
+      width: 1,
+      height: 2,
+      data: 'hello'
+    }]);
 });
 
 test('clear bottom', t => {
@@ -152,7 +228,15 @@ test('clear bottom', t => {
   };
 
   const area = coords(1, 1);
-  t.is(clear(tree, area), null);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+      top: 1,
+      left: 0,
+      width: 2,
+      height: 1,
+      data: 'hello'
+    }]);
 });
 
 test('clear one of two vertical', t => {
@@ -169,8 +253,16 @@ test('clear one of two vertical', t => {
   };
 
   const area = coords(0, 0);
-  t.not(clear(tree, area), null);
-  t.is(clear(tree, area).bottomLeft.data, 'bottom');
+  const [result, ...cleared] = clear(tree, area);
+  t.not(result, null);
+  t.is(result.bottomLeft.data, 'bottom');
+  t.deepEqual(cleared, [{
+    data: 'top',
+    top: 0,
+    left: 0,
+    width: 1,
+    height: 1
+  }]);
 });
 
 test('clear one of two horizontal', t => {
@@ -187,8 +279,16 @@ test('clear one of two horizontal', t => {
   };
 
   const area = coords(0, 0);
-  t.not(clear(tree, area), null);
-  t.is(clear(tree, area).topRight.data, 'right');
+  const [result, ...cleared] = clear(tree, area);
+  t.not(result, null);
+  t.is(result.topRight.data, 'right');
+  t.deepEqual(cleared, [{
+    data: 'left',
+    top: 0,
+    left: 0,
+    width: 1,
+    height: 1
+  }]);
 });
 
 test('clear one of two vertical', t => {
@@ -205,8 +305,16 @@ test('clear one of two vertical', t => {
   };
 
   const area = coords(0, 1);
-  t.not(clear(tree, area), null);
-  t.is(clear(tree, area).topLeft.data, 'top');
+  const [result, ...cleared] = clear(tree, area);
+  t.not(result, null);
+  t.is(result.topLeft.data, 'top');
+  t.deepEqual(cleared, [{
+    data: 'bottom',
+    top: 1,
+    left: 0,
+    width: 1,
+    height: 1
+  }]);
 });
 
 test('clear one of two horizontal', t => {
@@ -223,8 +331,152 @@ test('clear one of two horizontal', t => {
   };
 
   const area = coords(1, 0);
-  t.not(clear(tree, area), null);
-  t.is(clear(tree, area).topLeft.data, 'left');
+  const [result, ...cleared] = clear(tree, area);
+  t.not(result, null);
+  t.is(result.topLeft.data, 'left');
+  t.deepEqual(cleared, [{
+    data: 'right',
+    top: 0,
+    left: 1,
+    width: 1,
+    height: 1
+  }]);
+});
+
+test('clear nested center', t => {
+  const tree = {
+    ...createNode(8),
+    bottomRight: {
+      ...createNode(4),
+      center: {
+        top: 1,
+        left: 1,
+        right: 3,
+        bottom: 3,
+        data: 'hello'
+      }
+    }
+  };
+
+  const area = coords(6,6);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+      top: 5,
+      left: 5,
+      width: 2,
+      height: 2,
+      data: 'hello'
+    }]);
+});
+
+
+test('clear nested top', t => {
+  const tree = {
+    ...createNode(8),
+    bottomRight: {
+      ...createNode(4),
+      top: [{
+        top: 1,
+        left: 1,
+        right: 3,
+        bottom: 2,
+        data: 'hello'
+      }]
+    }
+  };
+
+  const area = coords(6, 5);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+      top: 5,
+      left: 5,
+      width: 2,
+      height: 1,
+      data: 'hello'
+    }]);
+});
+
+test('clear left', t => {
+  const tree = {
+    ...createNode(8),
+    bottomRight: {
+      ...createNode(4),
+      left: [{
+        top: 1,
+        left: 1,
+        right: 2,
+        bottom: 3,
+        data: 'hello'
+      }]
+    }
+  };
+
+  const area = coords(5, 6);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+      top: 5,
+      left: 5,
+      width: 1,
+      height: 2,
+      data: 'hello'
+    }]);
+});
+
+test('clear right', t => {
+  const tree = {
+    ...createNode(8),
+    bottomRight: {
+      ...createNode(4),
+      right: [{
+        top: 1,
+        left: 2,
+        right: 3,
+        bottom: 3,
+        data: 'hello'
+      }]
+    }
+  };
+
+  const area = coords(6, 6);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+      top: 5,
+      left: 6,
+      width: 1,
+      height: 2,
+      data: 'hello'
+    }]);
+});
+
+test('clear bottom', t => {
+  const tree = {
+    ...createNode(8),
+    bottomRight: {
+      ...createNode(4),
+      bottom: [{
+        top: 2,
+        left: 1,
+        right: 3,
+        bottom: 3,
+        data: 'hello'
+      }]
+    }
+  };
+
+  const area = coords(6, 6);
+  const [result, ...cleared] = clear(tree, area);
+  t.is(result, null);
+  t.deepEqual(cleared, [{
+      top: 6,
+      left: 5,
+      width: 2,
+      height: 1,
+      data: 'hello'
+    }]);
 });
 
 function coords(left, top, width=1, height=1){

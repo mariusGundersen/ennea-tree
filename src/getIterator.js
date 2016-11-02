@@ -9,7 +9,9 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
     return yield {
       data: tree.data,
       top: 0,
-      left: 0
+      left: 0,
+      width: 1,
+      height: 1
     };
   }
 
@@ -80,7 +82,9 @@ function* getIntersections(area, ...boxes){
         yield {
           data: box.data,
           top: area.top - box.top,
-          left: area.left - box.left
+          left: area.left - box.left,
+          width: box.right - box.left,
+          height: box.bottom - box.top
         };
       }
     }
