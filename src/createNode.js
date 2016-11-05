@@ -1,4 +1,4 @@
-export default function createNode(size){
+export default function createNode(size=1){
   return {
     size,
     data: null,

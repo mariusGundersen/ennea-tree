@@ -1,7 +1,7 @@
 import intersect from './intersect.js';
 
-export default function update(branch, getData){
-  const generator = updateGenerator(branch, getData);
+export default function update(tree, getData){
+  const generator = updateGenerator(tree, getData);
   generator.next();
   return {
     update({top, left, right=left+1, bottom=top+1}, context={top, left}){

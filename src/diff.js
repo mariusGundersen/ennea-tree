@@ -1,3 +1,8 @@
+import {
+  SET,
+  UPDATE,
+  CLEAR
+} from './diffConstants.js';
 import intersect from './intersect.js';
 import createNode from './createNode.js';
 
@@ -97,7 +102,7 @@ export default function *diff(treeBefore=null, treeAfter=null, top=0, left=0){
 
 function clear(before, {top=0, left=0, right=left+1, bottom=top+1, width=right-left, height=bottom-top}, treeTop, treeLeft){
   return {
-    type: 'clear',
+    type: CLEAR,
     top: treeTop + top,
     left: treeLeft + left,
     width,
@@ -108,7 +113,7 @@ function clear(before, {top=0, left=0, right=left+1, bottom=top+1, width=right-l
 
 function set(after, {top=0, left=0, right=left+1, bottom=top+1, width=right-left, height=bottom-top}, treeTop, treeLeft){
   return {
-    type: 'set',
+    type: SET,
     top: treeTop + top,
     left: treeLeft + left,
     width,
@@ -119,7 +124,7 @@ function set(after, {top=0, left=0, right=left+1, bottom=top+1, width=right-left
 
 function update(before, after, {top=0, left=0, right=left+1, bottom=top+1, width=right-left, height=bottom-top}, treeTop, treeLeft){
   return {
-    type: 'update',
+    type: UPDATE,
     top: treeTop + top,
     left: treeLeft + left,
     width,
