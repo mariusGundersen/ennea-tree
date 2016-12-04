@@ -82,7 +82,7 @@ export function* updateGenerator(tree, getData){
             ...t,
             data: getData(t.data, change.context, {top: change.area.top - t.top, left: change.area.left - t.left})
           } : t);
-      }else if(change.area.right >= halfSize && bottom.some(t => intersect(change.area, t))){
+      }else if(change.area.top >= halfSize && bottom.some(t => intersect(change.area, t))){
         bottom = bottom.map(t => intersect(change.area, t)
           ? {
             ...t,
