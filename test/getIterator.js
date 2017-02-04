@@ -200,6 +200,66 @@ test('not bottom right', t => {
   t.true(isEmpty(tree, area));
 });
 
+test('single tile coords', t => {
+  const tree = {
+    ...createNode(2),
+    bottomRight: {size:1, data:'bottomRight'}
+  };
+  const area = coords(0, 0, 2, 2);
+  t.deepEqual(getAll(tree, area)[0], {
+    top: 1,
+    left: 1,
+    width: 1,
+    height: 1,
+    data: 'bottomRight'
+  });
+});
+
+test('single tile coords with offset', t => {
+  const tree = {
+    ...createNode(2),
+    bottomRight: {size:1, data:'bottomRight'}
+  };
+  const area = coords(1, 1);
+  t.deepEqual(getAll(tree, area)[0], {
+    top: 1,
+    left: 1,
+    width: 1,
+    height: 1,
+    data: 'bottomRight'
+  });
+});
+
+test('multi tile coords', t => {
+  const tree = {
+    ...createNode(4),
+    center: {top: 1, left: 1, right: 3, bottom: 3, data:'center'}
+  };
+  const area = coords(0, 0, 4, 4);
+  t.deepEqual(getAll(tree, area)[0], {
+    top: 1,
+    left: 1,
+    width: 2,
+    height: 2,
+    data: 'center'
+  });
+});
+
+test('multi tile coords with offset', t => {
+  const tree = {
+    ...createNode(4),
+    center: {top: 1, left: 1, right: 3, bottom: 3, data:'center'}
+  };
+  const area = coords(1, 1, 3, 3);
+  t.deepEqual(getAll(tree, area)[0], {
+    top: 1,
+    left: 1,
+    width: 2,
+    height: 2,
+    data: 'center'
+  });
+});
+
 function getArray(tree, area){
   return getAll(tree, area).map(x => x.data);
 }

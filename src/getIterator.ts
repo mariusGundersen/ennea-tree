@@ -3,9 +3,10 @@ import { Node, BoxedData, AreaData, BoxArea, Box } from './types';
 
 export default function *getIterator<T>(
   tree : Node<T>,
-  {top, left, width=1, height=1, right=left+width, bottom=top+height} : BoxArea)
+  {top, left, width=1, height=1, right=left+width, bottom=top+height} : BoxArea,
+  x=0,
+  y=0)
   : IterableIterator<AreaData<T>> {
-
   if(tree == null){
     return;
   }
@@ -13,8 +14,8 @@ export default function *getIterator<T>(
   if(tree.data != null){
     return yield {
       data: tree.data,
-      top: 0,
-      left: 0,
+      top: y,
+      left: x,
       width: 1,
       height: 1
     };
@@ -29,7 +30,7 @@ export default function *getIterator<T>(
       left,
       right: min(right),
       bottom: min(bottom)
-    });
+    }, x, y);
   }
 
   if(top < halfSize && right > halfSize && tree.topRight){
@@ -38,7 +39,7 @@ export default function *getIterator<T>(
       left: max(left) - halfSize,
       right: right - halfSize,
       bottom: min(bottom)
-    });
+    }, x+halfSize, y);
   }
 
   if(bottom > halfSize && left < halfSize && tree.bottomLeft){
@@ -47,7 +48,7 @@ export default function *getIterator<T>(
       left,
       right: min(right),
       bottom: bottom - halfSize
-    });
+    }, x, y+halfSize);
   }
 
   if(bottom > halfSize && right > halfSize && tree.bottomRight){
@@ -56,41 +57,43 @@ export default function *getIterator<T>(
       left: max(left) - halfSize,
       right: right - halfSize,
       bottom: bottom - halfSize
-    });
+    }, x+halfSize, y+halfSize);
   }
 
   const area = {top, left, right, bottom} as Box;
   if(tree.center != null){
-    yield* getIntersections(area, tree.center);
+    yield* getIntersections(area, x, y, tree.center);
   }
 
   if(top < halfSize){
-    yield* getIntersections(area, ...tree.top);
+    yield* getIntersections(area, x, y, ...tree.top);
   }
 
   if(left < halfSize){
-    yield* getIntersections(area, ...tree.left);
+    yield* getIntersections(area, x, y, ...tree.left);
   }
 
   if(right > halfSize){
-    yield* getIntersections(area, ...tree.right);
+    yield* getIntersections(area, x, y, ...tree.right);
   }
 
   if(bottom > halfSize){
-    yield* getIntersections(area, ...tree.bottom);
+    yield* getIntersections(area, x, y, ...tree.bottom);
   }
 }
 
 function* getIntersections<T>(
   area : Box,
+  x : number,
+  y: number,
   ...boxes : BoxedData<T>[])
   : IterableIterator<AreaData<T>> {
     for(const box of boxes){
       if(intersect(box, area)){
         yield {
           data: box.data,
-          top: area.top - box.top,
-          left: area.left - box.left,
+          top: y + box.top,
+          left: x + box.left,
           width: box.right - box.left,
           height: box.bottom - box.top
         };
