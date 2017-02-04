@@ -6,8 +6,10 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
-    "target": "es2017",
-    "sourceMap": true
+    "target": "es2015",
+    "module": "commonjs",
+    "sourceMap": true,
+    "declaration": true
   },
   "include": [
     "./src/*.ts"

@@ -3,11 +3,12 @@
   "version": "1.0.2",
   "description": "Immutable tilemap quad-tree with support for mega-tiles",
   "main": "lib/main.js",
+  "types": "lib/main.d.ts",
   "scripts": {
     "test": "ava",
     "compile": "tsc",
     "watch": "tsc -w & ava -w",
-    "prepublish": "npm test && npm run compile"
+    "prepublish": "npm run compile && npm test"
   },
   "repository": {
     "type": "git",
@@ -26,12 +27,8 @@
   "homepage": "https://github.com/mariusGundersen/ennea-tree#readme",
   "devDependencies": {
     "ava": "^0.16.0",
-    "babel-cli": "^6.16.0",
-    "babel-plugin-transform-object-rest-spread": "^6.16.0",
-    "babel-preset-es2015-node": "^6.1.1",
-    "babel-preset-es2016": "^6.16.0",
-    "babel-register": "^6.16.3",
-    "typescript": "^2.1.5"
+    "typescript": "^2.1.5",
+    "@types/node": "^7.0.5"
   },
   "ava": {
     "files": [
@@ -39,13 +36,6 @@
     ],
     "source": [
       "lib/*.js"
-    ],
-    "require": [
-      "babel-register"
-    ],
-    "babel": "inherit"
-  },
-  "dependencies": {
-    "@types/node": "^7.0.5"
+    ]
   }
 }
