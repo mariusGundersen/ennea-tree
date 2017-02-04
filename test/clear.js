@@ -1,12 +1,12 @@
 import test from 'ava';
 
-import clear from '../src/clear.js';
-import createNode from '../src/createNode.js';
+import clear from '../lib/clear.js';
+import createNode from '../lib/createNode.js';
 
 test('data', t => {
   const tree = {size:5, data: 'hello'};
   const area = {};
-  const [result] = clear(tree, area);
+  const {tree: result} = clear(tree, area);
   t.deepEqual(result, createNode(5));
 });
 

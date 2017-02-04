@@ -1,7 +1,7 @@
 import test from 'ava';
 
-import set from '../src/set.js';
-import createNode from '../src/createNode.js';
+import set from '../lib/set.js';
+import createNode from '../lib/createNode.js';
 
 test('change center size should fail', t => {
   const initialTree = createNode(8);

@@ -64,7 +64,7 @@ export function* updateGenerator<T, TContext>(
       data = getData(data, change.context, {top: 0, left: 0});
     }
 
-    if(change == null){
+    if(change === null){
       return tree;
     }
 
@@ -83,7 +83,7 @@ export function* updateGenerator<T, TContext>(
     let topRight = null;
     let bottomLeft = null;
     let bottomRight = null;
-    let rawChange : (BoxContext<TContext> | undefined) = undefined;
+    let rawChange : (BoxContext<TContext> | null) = null;
     while(rawChange = yield){
       const change = rawChange;
       if(center != null && intersect(change.area, center)){
@@ -130,7 +130,7 @@ export function* updateGenerator<T, TContext>(
       }
     }
 
-    if(rawChange == null){
+    if(rawChange === null){
       return tree;
     }
 
@@ -142,10 +142,10 @@ export function* updateGenerator<T, TContext>(
       left,
       right,
       bottom,
-      topLeft: topLeft === null ? tree.topLeft : topLeft.result(),
-      topRight: topRight === null ? tree.topRight : topRight.result(),
-      bottomLeft: bottomLeft === null ? tree.bottomLeft : bottomLeft.result(),
-      bottomRight: bottomRight === null ? tree.bottomRight : bottomRight.result()
+      topLeft: topLeft == null ? tree.topLeft : topLeft.result(),
+      topRight: topRight == null ? tree.topRight : topRight.result(),
+      bottomLeft: bottomLeft == null ? tree.bottomLeft : bottomLeft.result(),
+      bottomRight: bottomRight == null ? tree.bottomRight : bottomRight.result()
     }
   }
 }

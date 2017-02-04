@@ -1,9 +1,9 @@
 import test from 'ava';
 
-import getIterator from '../src/getIterator.js';
-import getAll from '../src/getAll.js';
-import isEmpty from '../src/isEmpty.js';
-import createNode from '../src/createNode.js';
+import getIterator from '../lib/getIterator.js';
+import getAll from '../lib/getAll.js';
+import isEmpty from '../lib/isEmpty.js';
+import createNode from '../lib/createNode.js';
 
 test('null', t => {
   t.true(isEmpty(null, {}));

@@ -92,7 +92,7 @@ export default function setUnsafe<T>(
     };
   }
 
-  if(tree.center === null
+  if(tree.center == null
     && top < halfSize
     && left < halfSize
     && right > halfSize

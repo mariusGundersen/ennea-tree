@@ -8,7 +8,7 @@ export default function clearUnsafe<T>(
   y=0)
   : TreeAndCleared<T> {
 
-  if(tree.data !== null){
+  if(tree.data != null){
     return {
       tree: undefined,
       cleared: [{

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "ava",
     "compile": "tsc",
-    "watch": "tsc -w",
+    "watch": "tsc -w & ava -w",
     "prepublish": "npm test && npm run compile"
   },
   "repository": {
@@ -38,11 +38,14 @@
       "test/*.js"
     ],
     "source": [
-      "src/*.js"
+      "lib/*.js"
     ],
     "require": [
       "babel-register"
     ],
     "babel": "inherit"
+  },
+  "dependencies": {
+    "@types/node": "^7.0.5"
   }
 }

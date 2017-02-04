@@ -36,7 +36,7 @@ export default function *diff<T>(
   ? createNode<T>((treeBeforeUnsafe as Node<T>).size)
   : treeAfterUnsafe;
 
-  if(treeBefore.data !== null && treeAfter.data === null){
+  if(treeBefore.data != null && treeAfter.data == null){
     yield clear(treeBefore.data, nullBox, top, left);
   }
 
@@ -108,8 +108,8 @@ export default function *diff<T>(
     yield* getUpdate(treeBefore.bottom, treeAfter.bottom, top, left);
   }
 
-  if(treeAfter.data !== null){
-    if(treeBefore.data === null){
+  if(treeAfter.data != null){
+    if(treeBefore.data == null){
       yield set(treeAfter.data, nullBox, top, left);
     }else if(treeBefore.data !== treeAfter.data){
       yield update(treeBefore.data, treeAfter.data, nullBox, top, left);

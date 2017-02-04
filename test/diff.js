@@ -1,8 +1,8 @@
 import test from 'ava';
 
-import diff from '../src/diff.js';
-import set from '../src/set.js';
-import createNode from '../src/createNode.js';
+import diff from '../lib/diff.js';
+import set from '../lib/set.js';
+import createNode from '../lib/createNode.js';
 
 test('null and null', t => {
   const result = [...diff(null, null)];
