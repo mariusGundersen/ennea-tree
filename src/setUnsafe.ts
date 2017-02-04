@@ -1,10 +1,12 @@
-import createNode from './createNode.js';
-import intersect from './intersect.js';
+import createNode from './createNode';
+import intersect from './intersect';
+import { Area, Box, BoxArea, BoxedData, Node } from './types';
 
-export default function setUnsafe(tree, data, {top, left, width=1, height=1, right=left+width, bottom=top+height}){
-  if(tree == null){
-    return null;
-  }
+export default function setUnsafe<T>(
+  tree : Node<T>,
+  data : T,
+  {top, left, width=1, height=1, right=left+width, bottom=top+height} : BoxArea)
+  : Node<T> {
 
   if(tree.size === 1){
     return {
@@ -17,7 +19,7 @@ export default function setUnsafe(tree, data, {top, left, width=1, height=1, rig
   if(right <= halfSize && bottom <= halfSize){
     return {
       ...tree,
-      topLeft: setUnsafe(tree.topLeft || createNode(halfSize), data, {
+      topLeft: setUnsafe(tree.topLeft || createNode<T>(halfSize), data, {
         top,
         left,
         right,
@@ -29,7 +31,7 @@ export default function setUnsafe(tree, data, {top, left, width=1, height=1, rig
   if(left >= halfSize && bottom <= halfSize){
     return {
       ...tree,
-      topRight: setUnsafe(tree.topRight || createNode(halfSize), data, {
+      topRight: setUnsafe(tree.topRight || createNode<T>(halfSize), data, {
         top,
         left: left - halfSize,
         right: right - halfSize,
@@ -41,7 +43,7 @@ export default function setUnsafe(tree, data, {top, left, width=1, height=1, rig
   if(right <= halfSize && top >= halfSize){
     return {
       ...tree,
-      bottomLeft: setUnsafe(tree.bottomLeft || createNode(halfSize), data, {
+      bottomLeft: setUnsafe(tree.bottomLeft || createNode<T>(halfSize), data, {
         top: top - halfSize,
         left,
         right,
@@ -53,7 +55,7 @@ export default function setUnsafe(tree, data, {top, left, width=1, height=1, rig
   if(left >= halfSize && top >= halfSize){
     return {
       ...tree,
-      bottomRight: setUnsafe(tree.bottomRight || createNode(halfSize), data, {
+      bottomRight: setUnsafe(tree.bottomRight || createNode<T>(halfSize), data, {
         top: top - halfSize,
         left: left - halfSize,
         right: right - halfSize,
@@ -66,28 +68,28 @@ export default function setUnsafe(tree, data, {top, left, width=1, height=1, rig
     return {
       ...tree,
       top: [...tree.top, {top, left, right, bottom, data}]
-    }
+    };
   }
 
   if(right <= halfSize){
     return {
       ...tree,
       left: [...tree.left, {top, left, right, bottom, data}]
-    }
+    };
   }
 
   if(left >= halfSize){
     return {
       ...tree,
       right: [...tree.right, {top, left, right, bottom, data}]
-    }
+    };
   }
 
   if(top >= halfSize){
     return {
       ...tree,
       bottom: [...tree.bottom, {top, left, right, bottom, data}]
-    }
+    };
   }
 
   if(tree.center === null

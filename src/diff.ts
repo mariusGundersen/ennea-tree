@@ -1,30 +1,47 @@
 import {
   SET,
   UPDATE,
-  CLEAR
-} from './diffConstants.js';
-import intersect from './intersect.js';
-import createNode from './createNode.js';
+  CLEAR,
+  ChangeType
+} from './diffConstants';
+import intersect from './intersect';
+import createNode from './createNode';
 
-export default function *diff(treeBefore=null, treeAfter=null, top=0, left=0){
-  if(treeBefore === treeAfter){
+import { Node, Box, Area, BoxArea, BoxedData } from './types';
+
+export interface Change<T> extends Area {
+  readonly type: ChangeType,
+  readonly before? : T,
+  readonly after? : T
+}
+
+const nullBox = {top:0, left:0};
+
+export default function *diff<T>(
+  treeBeforeUnsafe : (Node<T> | null) = null,
+  treeAfterUnsafe : (Node<T> | null) = null,
+  top=0,
+  left=0)
+  : IterableIterator<Change<T>>{
+
+  if(treeBeforeUnsafe === treeAfterUnsafe){
     return;
   }
 
-  if(treeBefore === null){
-    treeBefore = createNode(treeAfter.size);
-  }
+  const treeBefore = treeBeforeUnsafe == null
+  ? createNode<T>((treeAfterUnsafe as Node<T>).size)
+  : treeBeforeUnsafe;
 
-  if(treeAfter === null){
-    treeAfter = createNode(treeBefore.size);
-  }
+  const treeAfter = treeAfterUnsafe == null
+  ? createNode<T>((treeBeforeUnsafe as Node<T>).size)
+  : treeAfterUnsafe;
 
   if(treeBefore.data !== null && treeAfter.data === null){
-    yield clear(treeBefore.data, {}, top, left);
+    yield clear(treeBefore.data, nullBox, top, left);
   }
 
-  if(treeBefore.center !== null
-  && (treeAfter.center === null
+  if(treeBefore.center != null
+  && (treeAfter.center == null
   || !sameBox(treeBefore.center, treeAfter.center))){
     yield clear(treeBefore.center.data, treeBefore.center, top, left);
   }
@@ -63,8 +80,8 @@ export default function *diff(treeBefore=null, treeAfter=null, top=0, left=0){
   yield* diff(treeBefore.bottomLeft, treeAfter.bottomLeft, top+halfSize, left);
   yield* diff(treeBefore.bottomRight, treeAfter.bottomRight, top+halfSize, left+halfSize);
 
-  if(treeAfter.center !== null){
-    if(treeBefore.center === null || !sameBox(treeBefore.center, treeAfter.center)){
+  if(treeAfter.center != null){
+    if(treeBefore.center == null || !sameBox(treeBefore.center, treeAfter.center)){
       yield set(treeAfter.center.data, treeAfter.center, top, left);
     }else if(treeBefore.center !== treeAfter.center && sameBox(treeBefore.center, treeAfter.center)){
       yield update(treeBefore.center.data, treeAfter.center.data, treeAfter.center, top, left);
@@ -93,16 +110,21 @@ export default function *diff(treeBefore=null, treeAfter=null, top=0, left=0){
 
   if(treeAfter.data !== null){
     if(treeBefore.data === null){
-      yield set(treeAfter.data, {}, top, left);
+      yield set(treeAfter.data, nullBox, top, left);
     }else if(treeBefore.data !== treeAfter.data){
-      yield update(treeBefore.data, treeAfter.data, {}, top, left);
+      yield update(treeBefore.data, treeAfter.data, nullBox, top, left);
     }
   }
 }
 
-function clear(before, {top=0, left=0, right=left+1, bottom=top+1, width=right-left, height=bottom-top}, treeTop, treeLeft){
+function clear<T>(
+  before : T,
+  {top, left, right=left+1, bottom=top+1, width=right-left, height=bottom-top} : BoxArea,
+  treeTop : number,
+  treeLeft : number)
+  : Change<T> {
   return {
-    type: CLEAR,
+    type: CLEAR as ChangeType,
     top: treeTop + top,
     left: treeLeft + left,
     width,
@@ -111,9 +133,14 @@ function clear(before, {top=0, left=0, right=left+1, bottom=top+1, width=right-l
   };
 }
 
-function set(after, {top=0, left=0, right=left+1, bottom=top+1, width=right-left, height=bottom-top}, treeTop, treeLeft){
+function set<T>(
+  after : T,
+  {top, left, right=left+1, bottom=top+1, width=right-left, height=bottom-top} : BoxArea,
+  treeTop : number,
+  treeLeft : number)
+  : Change<T>{
   return {
-    type: SET,
+    type: SET as ChangeType,
     top: treeTop + top,
     left: treeLeft + left,
     width,
@@ -122,9 +149,15 @@ function set(after, {top=0, left=0, right=left+1, bottom=top+1, width=right-left
   };
 }
 
-function update(before, after, {top=0, left=0, right=left+1, bottom=top+1, width=right-left, height=bottom-top}, treeTop, treeLeft){
+function update<T>(
+  before : T,
+  after : T,
+  {top, left, right=left+1, bottom=top+1, width=right-left, height=bottom-top} : BoxArea,
+  treeTop : number,
+  treeLeft : number)
+  : Change<T>{
   return {
-    type: UPDATE,
+    type: UPDATE as ChangeType,
     top: treeTop + top,
     left: treeLeft + left,
     width,
@@ -134,14 +167,24 @@ function update(before, after, {top=0, left=0, right=left+1, bottom=top+1, width
   };
 }
 
-function getSet(befores, afters, top, left){
+function getSet<T>(
+  befores : BoxedData<T>[],
+  afters : BoxedData<T>[],
+  top : number,
+  left : number)
+  : Change<T>[]{
   return afters
     .filter(after => befores.indexOf(after) < 0)
     .filter(after => !befores.some(before => sameBox(before, after)))
     .map(t => set(t.data, t, top, left));
 }
 
-function getUpdate(befores, afters, top, left){
+function getUpdate<T>(
+  befores : BoxedData<T>[],
+  afters : BoxedData<T>[],
+  top : number,
+  left : number)
+  : Change<T>[]{
   return afters
     .filter(after => befores.indexOf(after) < 0)
     .map(after => ({
@@ -152,7 +195,7 @@ function getUpdate(befores, afters, top, left){
     .map(t => update(t.before.data, t.after.data, t.after, top, left))
 }
 
-function sameBox(a, b){
+function sameBox(a : Box, b : Box) : boolean {
   if(a.top !== b.top) return false;
   if(a.left !== b.left) return false;
   if(a.right !== b.right) return false;

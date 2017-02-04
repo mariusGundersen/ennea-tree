@@ -1,11 +1,17 @@
-import intersect from './intersect.js';
+import intersect from './intersect';
+import { Node, BoxedData, AreaData, BoxArea, Box } from './types';
 
-export default function *getIterator(tree, {top, left, width=1, height=1, right=left+width, bottom=top+height}){
+
+export default function *getIterator<T>(
+  tree : Node<T>,
+  {top, left, width=1, height=1, right=left+width, bottom=top+height} : BoxArea)
+  : IterableIterator<AreaData<T>> {
+
   if(tree == null){
     return;
   }
 
-  if(tree.data !== null){
+  if(tree.data != null){
     return yield {
       data: tree.data,
       top: 0,
@@ -16,9 +22,9 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
   }
 
   const halfSize = tree.size/2;
-  const min = x => Math.min(x, halfSize);
-  const max = x => Math.max(x, halfSize);
-  if(top < halfSize && left < halfSize){
+  const min = (x : number) => Math.min(x, halfSize);
+  const max = (x : number) => Math.max(x, halfSize);
+  if(top < halfSize && left < halfSize && tree.topLeft){
     yield* getIterator(tree.topLeft, {
       top,
       left,
@@ -27,7 +33,7 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
     });
   }
 
-  if(top < halfSize && right > halfSize){
+  if(top < halfSize && right > halfSize && tree.topRight){
     yield* getIterator(tree.topRight, {
       top,
       left: max(left) - halfSize,
@@ -36,7 +42,7 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
     });
   }
 
-  if(bottom > halfSize && left < halfSize){
+  if(bottom > halfSize && left < halfSize && tree.bottomLeft){
     yield* getIterator(tree.bottomLeft, {
       top: max(top) - halfSize,
       left,
@@ -45,7 +51,7 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
     });
   }
 
-  if(bottom > halfSize && right > halfSize){
+  if(bottom > halfSize && right > halfSize && tree.bottomRight){
     yield* getIterator(tree.bottomRight, {
       top: max(top) - halfSize,
       left: max(left) - halfSize,
@@ -54,8 +60,8 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
     });
   }
 
-  const area = {top, left, right, bottom};
-  if(tree.center !== null){
+  const area = {top, left, right, bottom} as Box;
+  if(tree.center != null){
     yield* getIntersections(area, tree.center);
   }
 
@@ -76,7 +82,10 @@ export default function *getIterator(tree, {top, left, width=1, height=1, right=
   }
 }
 
-function* getIntersections(area, ...boxes){
+function* getIntersections<T>(
+  area : Box,
+  ...boxes : BoxedData<T>[])
+  : IterableIterator<AreaData<T>> {
     for(const box of boxes){
       if(intersect(box, area)){
         yield {
