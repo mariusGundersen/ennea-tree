@@ -1,15 +1,17 @@
-import get from './get.js';
-import set from './set.js';
-import diff from './diff.js';
-import clear from './clear.js';
-import update from './update.js';
-import getAll from './getAll.js';
-import isEmpty from './isEmpty.js';
-import setUnsafe from './setUnsafe.js';
-import createNode from './createNode.js';
-import clearUnsafe from './clearUnsafe.js';
-import getIterator from './getIterator.js';
-import {SET, UPDATE, CLEAR} from './diffConstants.js';
+import get from './get';
+import set from './set';
+import diff from './diff';
+import clear from './clear';
+import update, {BoxContext, GetData} from './update';
+import getAll from './getAll';
+import isEmpty from './isEmpty';
+import setUnsafe from './setUnsafe';
+import createNode from './createNode';
+import clearUnsafe from './clearUnsafe';
+import getIterator from './getIterator';
+import {SET, UPDATE, CLEAR, Change, ChangeClear, ChangeSet, ChangeUpdate} from './diffConstants';
+
+import { Node, Box, BoxArea, BoxedData, Boxish, Area, AreaData, Pos } from './types';
 
 export {
   get,
@@ -26,5 +28,19 @@ export {
   createNode as createTree,
   SET,
   UPDATE,
-  CLEAR
+  CLEAR,
+  Node,
+  Box,
+  BoxArea,
+  BoxedData,
+  Boxish,
+  Area,
+  AreaData,
+  Pos,
+  BoxContext,
+  GetData,
+  Change,
+  ChangeClear,
+  ChangeSet,
+  ChangeUpdate
 };

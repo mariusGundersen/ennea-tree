@@ -1,7 +1,6 @@
 import intersect from './intersect';
 import { Node, BoxedData, AreaData, BoxArea, Box } from './types';
 
-
 export default function *getIterator<T>(
   tree : Node<T>,
   {top, left, width=1, height=1, right=left+width, bottom=top+height} : BoxArea)

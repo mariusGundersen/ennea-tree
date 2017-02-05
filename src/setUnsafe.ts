@@ -1,6 +1,6 @@
 import createNode from './createNode';
 import intersect from './intersect';
-import { Area, Box, BoxArea, BoxedData, Node } from './types';
+import { Box, BoxArea, BoxedData, Node } from './types';
 
 export default function setUnsafe<T>(
   tree : Node<T>,

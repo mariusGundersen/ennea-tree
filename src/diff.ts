@@ -2,18 +2,15 @@ import {
   SET,
   UPDATE,
   CLEAR,
-  ChangeType
+  Change,
+  ChangeSet,
+  ChangeUpdate,
+  ChangeClear
 } from './diffConstants';
 import intersect from './intersect';
 import createNode from './createNode';
 
 import { Node, Box, Area, BoxArea, BoxedData } from './types';
-
-export interface Change<T> extends Area {
-  readonly type: ChangeType,
-  readonly before? : T,
-  readonly after? : T
-}
 
 const nullBox = {top:0, left:0};
 
@@ -122,9 +119,9 @@ function clear<T>(
   {top, left, right=left+1, bottom=top+1, width=right-left, height=bottom-top} : BoxArea,
   treeTop : number,
   treeLeft : number)
-  : Change<T> {
+  : ChangeClear<T> {
   return {
-    type: CLEAR as ChangeType,
+    type: CLEAR,
     top: treeTop + top,
     left: treeLeft + left,
     width,
@@ -138,9 +135,9 @@ function set<T>(
   {top, left, right=left+1, bottom=top+1, width=right-left, height=bottom-top} : BoxArea,
   treeTop : number,
   treeLeft : number)
-  : Change<T>{
+  : ChangeSet<T>{
   return {
-    type: SET as ChangeType,
+    type: SET,
     top: treeTop + top,
     left: treeLeft + left,
     width,
@@ -155,9 +152,9 @@ function update<T>(
   {top, left, right=left+1, bottom=top+1, width=right-left, height=bottom-top} : BoxArea,
   treeTop : number,
   treeLeft : number)
-  : Change<T>{
+  : ChangeUpdate<T>{
   return {
-    type: UPDATE as ChangeType,
+    type: UPDATE,
     top: treeTop + top,
     left: treeLeft + left,
     width,
@@ -172,7 +169,7 @@ function getSet<T>(
   afters : BoxedData<T>[],
   top : number,
   left : number)
-  : Change<T>[]{
+  : ChangeSet<T>[]{
   return afters
     .filter(after => befores.indexOf(after) < 0)
     .filter(after => !befores.some(before => sameBox(before, after)))
@@ -184,7 +181,7 @@ function getUpdate<T>(
   afters : BoxedData<T>[],
   top : number,
   left : number)
-  : Change<T>[]{
+  : ChangeUpdate<T>[]{
   return afters
     .filter(after => befores.indexOf(after) < 0)
     .map(after => ({
