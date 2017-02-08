@@ -6,9 +6,9 @@ export default function clearUnsafe<T>(
   {top, left, width=1, height=1, right=left+width, bottom=top+height} : BoxArea,
   x=0,
   y=0)
-  : TreeAndCleared<T> {
+  : UnsafeTreeAndCleared<T> {
 
-  if(tree.data != null){
+  if(tree.data != undefined){
     return {
       tree: undefined,
       cleared: [{
@@ -104,7 +104,7 @@ export default function clearUnsafe<T>(
   || topLeft
   || topRight
   || bottomLeft
-  || bottomRight) == null){
+  || bottomRight) == undefined){
     return {
       tree: undefined,
       cleared
@@ -130,6 +130,11 @@ export default function clearUnsafe<T>(
 }
 
 export interface TreeAndCleared<T>{
+  tree: Node<T>,
+  cleared: AreaData<T>[]
+}
+
+export interface UnsafeTreeAndCleared<T>{
   tree?: Node<T>,
   cleared: AreaData<T>[]
 }

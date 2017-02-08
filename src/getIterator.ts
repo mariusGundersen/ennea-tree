@@ -7,11 +7,11 @@ export default function *getIterator<T>(
   x=0,
   y=0)
   : IterableIterator<AreaData<T>> {
-  if(tree == null){
+  if(tree == undefined){
     return;
   }
 
-  if(tree.data != null){
+  if(tree.data != undefined){
     return yield {
       data: tree.data,
       top: y,
@@ -61,7 +61,7 @@ export default function *getIterator<T>(
   }
 
   const area = {top, left, right, bottom} as Box;
-  if(tree.center != null){
+  if(tree.center != undefined){
     yield* getIntersections(area, x, y, tree.center);
   }
 

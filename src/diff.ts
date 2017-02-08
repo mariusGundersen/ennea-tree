@@ -15,8 +15,8 @@ import { Node, Box, Area, BoxArea, BoxedData } from './types';
 const nullBox = {top:0, left:0};
 
 export default function *diff<T>(
-  treeBeforeUnsafe : (Node<T> | null) = null,
-  treeAfterUnsafe : (Node<T> | null) = null,
+  treeBeforeUnsafe? : Node<T>,
+  treeAfterUnsafe? : Node<T>,
   top=0,
   left=0)
   : IterableIterator<Change<T>>{
@@ -25,20 +25,20 @@ export default function *diff<T>(
     return;
   }
 
-  const treeBefore = treeBeforeUnsafe == null
+  const treeBefore = treeBeforeUnsafe == undefined
   ? createNode<T>((treeAfterUnsafe as Node<T>).size)
   : treeBeforeUnsafe;
 
-  const treeAfter = treeAfterUnsafe == null
+  const treeAfter = treeAfterUnsafe == undefined
   ? createNode<T>((treeBeforeUnsafe as Node<T>).size)
   : treeAfterUnsafe;
 
-  if(treeBefore.data != null && treeAfter.data == null){
+  if(treeBefore.data != undefined && treeAfter.data == undefined){
     yield clear(treeBefore.data, nullBox, top, left);
   }
 
-  if(treeBefore.center != null
-  && (treeAfter.center == null
+  if(treeBefore.center != undefined
+  && (treeAfter.center == undefined
   || !sameBox(treeBefore.center, treeAfter.center))){
     yield clear(treeBefore.center.data, treeBefore.center, top, left);
   }
@@ -77,8 +77,8 @@ export default function *diff<T>(
   yield* diff(treeBefore.bottomLeft, treeAfter.bottomLeft, top+halfSize, left);
   yield* diff(treeBefore.bottomRight, treeAfter.bottomRight, top+halfSize, left+halfSize);
 
-  if(treeAfter.center != null){
-    if(treeBefore.center == null || !sameBox(treeBefore.center, treeAfter.center)){
+  if(treeAfter.center != undefined){
+    if(treeBefore.center == undefined || !sameBox(treeBefore.center, treeAfter.center)){
       yield set(treeAfter.center.data, treeAfter.center, top, left);
     }else if(treeBefore.center !== treeAfter.center && sameBox(treeBefore.center, treeAfter.center)){
       yield update(treeBefore.center.data, treeAfter.center.data, treeAfter.center, top, left);
@@ -105,8 +105,8 @@ export default function *diff<T>(
     yield* getUpdate(treeBefore.bottom, treeAfter.bottom, top, left);
   }
 
-  if(treeAfter.data != null){
-    if(treeBefore.data == null){
+  if(treeAfter.data != undefined){
+    if(treeBefore.data == undefined){
       yield set(treeAfter.data, nullBox, top, left);
     }else if(treeBefore.data !== treeAfter.data){
       yield update(treeBefore.data, treeAfter.data, nullBox, top, left);

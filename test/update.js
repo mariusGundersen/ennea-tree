@@ -4,9 +4,9 @@ import createNode from '../lib/createNode.js';
 import update from '../lib/update.js';
 
 test('null', t => {
-  const updater = update(null, null);
+  const updater = update(undefined, undefined);
   updater.update({top:0, left:0});
-  t.is(updater.result(), null);
+  t.is(updater.result(), undefined);
 });
 
 test('data', t => {
