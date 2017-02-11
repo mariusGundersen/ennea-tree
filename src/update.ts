@@ -1,44 +1,72 @@
-import intersect from './intersect.js';
+import intersect from './intersect';
+import { Node, BoxedData, Boxish, Box, Pos } from './types';
 
-export default function update(tree, getData){
+export type GetData<T, TContext> = (data : T, context : TContext, pos : Pos) => T;
+
+export interface BoxContext<TContext>{
+  area: Box,
+  context: TContext
+};
+
+export interface Updater<T, TContext>{
+  update: (area : Boxish, context: TContext) => void,
+  result: (changes?: BoxContext<TContext>[]) => Node<T>
+}
+
+export default function update<T, TContext>(
+  tree : Node<T> | undefined,
+  getData : GetData<T, TContext>)
+  : Updater<T, TContext>{
   const generator = updateGenerator(tree, getData);
   generator.next();
-  return {
-    update({top, left, right=left+1, bottom=top+1}, context={top, left}){
-      generator.next({
-        area: {
-          top,
-          left,
-          right,
-          bottom
-        },
-        context
-      });
-    },
-    result(changes = []){
-      for(const change of changes){
-        this.update(change.area, change.context);
-      }
-      return generator.next().value;
+  function update(
+    {top, left, right=left+1, bottom=top+1} : Boxish,
+    context : TContext){
+    generator.next({
+      area: {
+        top,
+        left,
+        right,
+        bottom
+      },
+      context
+    });
+  };
+
+  function result(changes : BoxContext<TContext>[] = []){
+    for(const change of changes){
+      update(change.area, change.context);
     }
+    return generator.next().value;
+  };
+
+  return {
+    update,
+    result
   }
 }
 
-export function* updateGenerator(tree, getData){
-  if(tree === null){
+export function* updateGenerator<T, TContext>(
+  tree : Node<T> | undefined,
+  getData : GetData<T, TContext>)
+  : IterableIterator<Node<T>>{
+
+  if(tree == undefined){
     let change;
     while(change = yield);
-    return null;
+    return undefined;
   }
 
-  if(tree.data !== null){
+  if(tree.data != undefined){
     let data = tree.data;
-    let change = null;
+    let change = undefined;
+    let changed = false;
     while(change = yield){
+      changed = true;
       data = getData(data, change.context, {top: 0, left: 0});
     }
 
-    if(change === null){
+    if(!changed){
       return tree;
     }
 
@@ -53,13 +81,16 @@ export function* updateGenerator(tree, getData){
     let left = tree.left;
     let right = tree.right;
     let bottom = tree.bottom;
-    let topLeft = null;
-    let topRight = null;
-    let bottomLeft = null;
-    let bottomRight = null;
-    let change = null;
-    while(change = yield){
-      if(center !== null && intersect(change.area, center)){
+    let topLeft = undefined;
+    let topRight = undefined;
+    let bottomLeft = undefined;
+    let bottomRight = undefined;
+    let rawChange : BoxContext<TContext> | undefined = undefined;
+    let changed = false;
+    while(rawChange = yield){
+      changed = true;
+      const change = rawChange;
+      if(center != undefined && intersect(change.area, center)){
         center = {
           ...center,
           data: getData(center.data, change.context, {top: change.area.top - center.top, left: change.area.left - center.left})
@@ -103,22 +134,22 @@ export function* updateGenerator(tree, getData){
       }
     }
 
-    if(change === null){
+    if(!changed){
       return tree;
     }
 
     return {
       size: tree.size,
-      data: null,
+      data: undefined,
       center,
       top,
       left,
       right,
       bottom,
-      topLeft: topLeft === null ? tree.topLeft : topLeft.result(),
-      topRight: topRight === null ? tree.topRight : topRight.result(),
-      bottomLeft: bottomLeft === null ? tree.bottomLeft : bottomLeft.result(),
-      bottomRight: bottomRight === null ? tree.bottomRight : bottomRight.result()
+      topLeft: topLeft == undefined ? tree.topLeft : topLeft.result(),
+      topRight: topRight == undefined ? tree.topRight : topRight.result(),
+      bottomLeft: bottomLeft == undefined ? tree.bottomLeft : bottomLeft.result(),
+      bottomRight: bottomRight == undefined ? tree.bottomRight : bottomRight.result()
     }
   }
 }

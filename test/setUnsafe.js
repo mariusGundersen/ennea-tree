@@ -1,7 +1,7 @@
 import test from 'ava';
 
-import setUnsafe from '../src/setUnsafe.js';
-import createNode from '../src/createNode.js';
+import setUnsafe from '../lib/setUnsafe.js';
+import createNode from '../lib/createNode.js';
 
 test('setUnsafe data', t => {
   const initialTree = createNode(1);
