@@ -2,12 +2,14 @@
   "name": "ennea-tree",
   "version": "1.0.2",
   "description": "Immutable tilemap quad-tree with support for mega-tiles",
-  "main": "lib/main.js",
-  "types": "lib/main.d.ts",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
   "scripts": {
-    "clean": "rm -rf ./lib",
+    "clean": "rm -rf ./lib ./dist",
     "test": "ava",
-    "compile": "tsc",
+    "typescript": "tsc",
+    "compile": "npm run typescript && npm run babel",
+    "babel": "babel --source-maps --copy-files -d dist lib",
     "watch": "tsc -w & ava -w",
     "prepublish": "npm run clean && npm run compile && npm test"
   },
@@ -29,6 +31,8 @@
   "devDependencies": {
     "@types/node": "^7.0.5",
     "ava": "^0.16.0",
+    "babel-cli": "^6.22.2",
+    "babel-preset-es2015": "^6.22.0",
     "typescript": "^2.1.5"
   },
   "ava": {
