@@ -1,6 +1,6 @@
 {
   "name": "ennea-tree",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Immutable tilemap quad-tree with support for mega-tiles",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
