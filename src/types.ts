@@ -38,7 +38,7 @@ export interface BoxedData<T> extends Box{
 }
 
 export interface AreaData<T> extends Area{
-  readonly data? : T
+  readonly data : T
 }
 
 export interface Node<T>{
