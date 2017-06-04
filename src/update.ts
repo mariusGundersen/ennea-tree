@@ -3,6 +3,8 @@ import { Node, BoxedData, Boxish, Box, Pos } from './types';
 
 export type GetData<T, TContext> = (data : T, context : TContext, pos : Pos) => T;
 
+export type Unchanged<T> = (before : T, after : T) => boolean;
+
 export interface BoxContext<TContext>{
   area: Box,
   context: TContext
@@ -15,9 +17,10 @@ export interface Updater<T, TContext>{
 
 export default function update<T, TContext>(
   tree : Node<T> | undefined,
-  getData : GetData<T, TContext>)
+  getData : GetData<T, TContext>,
+  unchanged : Unchanged<T> = () => false)
   : Updater<T, TContext>{
-  const generator = updateGenerator(tree, getData);
+  const generator = updateGenerator(tree, getData, unchanged);
   generator.next();
   function update(
     {top, left, right=left+1, bottom=top+1} : Boxish,
@@ -48,7 +51,8 @@ export default function update<T, TContext>(
 
 export function* updateGenerator<T, TContext>(
   tree : Node<T> | undefined,
-  getData : GetData<T, TContext>)
+  getData : GetData<T, TContext>,
+  unchanged : Unchanged<T> = () => false)
   : IterableIterator<Node<T>>{
 
   if(tree == undefined){
@@ -70,6 +74,10 @@ export function* updateGenerator<T, TContext>(
       return tree;
     }
 
+    if(tree.data === data || unchanged(tree.data, data)){
+      return tree;
+    }
+
     return {
       ...tree,
       data
@@ -81,10 +89,10 @@ export function* updateGenerator<T, TContext>(
     let left = tree.left;
     let right = tree.right;
     let bottom = tree.bottom;
-    let topLeft = undefined;
-    let topRight = undefined;
-    let bottomLeft = undefined;
-    let bottomRight = undefined;
+    let topLeftUpdater = undefined;
+    let topRightUpdater = undefined;
+    let bottomLeftUpdater = undefined;
+    let bottomRightUpdater = undefined;
     let rawChange : BoxContext<TContext> | undefined = undefined;
     let changed = false;
     while(rawChange = yield){
@@ -120,21 +128,99 @@ export function* updateGenerator<T, TContext>(
             data: getData(t.data, change.context, {top: change.area.top - t.top, left: change.area.left - t.left})
           } : t);
       }else if(change.area.top < halfSize && change.area.left < halfSize){
-        topLeft = topLeft || update(tree.topLeft, getData);
-        topLeft.update({top: change.area.top, left: change.area.left}, change.context);
+        topLeftUpdater = topLeftUpdater || update(tree.topLeft, getData);
+        topLeftUpdater.update({top: change.area.top, left: change.area.left}, change.context);
       }else if(change.area.top < halfSize && change.area.left >= halfSize){
-        topRight = topRight || update(tree.topRight, getData);
-        topRight.update({top: change.area.top, left: change.area.left - halfSize}, change.context);
+        topRightUpdater = topRightUpdater || update(tree.topRight, getData);
+        topRightUpdater.update({top: change.area.top, left: change.area.left - halfSize}, change.context);
       }else if(change.area.top >= halfSize && change.area.left < halfSize){
-        bottomLeft = bottomLeft || update(tree.bottomLeft, getData);
-        bottomLeft.update({top: change.area.top - halfSize, left: change.area.left}, change.context);
+        bottomLeftUpdater = bottomLeftUpdater || update(tree.bottomLeft, getData);
+        bottomLeftUpdater.update({top: change.area.top - halfSize, left: change.area.left}, change.context);
       }else if(change.area.top >= halfSize && change.area.left >= halfSize){
-        bottomRight = bottomRight || update(tree.bottomRight, getData);
-        bottomRight.update({top: change.area.top - halfSize, left: change.area.left - halfSize}, change.context);
+        bottomRightUpdater = bottomRightUpdater || update(tree.bottomRight, getData);
+        bottomRightUpdater.update({top: change.area.top - halfSize, left: change.area.left - halfSize}, change.context);
       }
     }
 
     if(!changed){
+      return tree;
+    }
+
+    let nodeUnchanged = true;
+
+    if(tree.center === center || tree.center === undefined || center === undefined){
+      //do nothing
+    }else if(tree.center.data === center.data || unchanged(tree.center.data, center.data)){
+      center = tree.center;
+    }else{
+      nodeUnchanged = false;
+    }
+
+    if(tree.top === top){
+      //do nothing
+    }else if(tree.top.every((e, i) => e.data === top[i].data || unchanged(e.data, top[i].data))){
+      top = tree.top;
+    }else{
+      nodeUnchanged = false;
+    }
+
+    if(tree.left === left){
+      //do nothing
+    }else if(tree.left.every((e, i) => e.data === left[i].data || unchanged(e.data, left[i].data))){
+      left = tree.left;
+    }else{
+      nodeUnchanged = false;
+    }
+
+    if(tree.right === right){
+      //do nothing
+    }else if(tree.right.every((e, i) => e.data === right[i].data || unchanged(e.data, right[i].data))){
+      right = tree.right;
+    }else{
+      nodeUnchanged = false;
+    }
+
+    if(tree.bottom === bottom){
+      //do nothing
+    }else if(tree.bottom.every((e, i) => e.data === bottom[i].data || unchanged(e.data, bottom[i].data))){
+      bottom = tree.bottom;
+    }else{
+      nodeUnchanged = false;
+    }
+
+    let topLeft = tree.topLeft;
+    if(topLeftUpdater !== undefined){
+      topLeft = topLeftUpdater.result();
+      if(topLeft !== tree.topLeft){
+        nodeUnchanged = false;
+      }
+    }
+
+    let topRight = tree.topRight;
+    if(topRightUpdater !== undefined){
+      topRight = topRightUpdater.result();
+      if(topRight !== tree.topRight){
+        nodeUnchanged = false;
+      }
+    }
+
+    let bottomLeft = tree.bottomLeft;
+    if(bottomLeftUpdater !== undefined){
+      bottomLeft = bottomLeftUpdater.result();
+      if(bottomLeft !== tree.bottomLeft){
+        nodeUnchanged = false;
+      }
+    }
+
+    let bottomRight = tree.bottomRight;
+    if(bottomRightUpdater !== undefined){
+      bottomRight = bottomRightUpdater.result();
+      if(bottomRight !== tree.bottomRight){
+        nodeUnchanged = false;
+      }
+    }
+
+    if(nodeUnchanged){
       return tree;
     }
 
@@ -146,10 +232,10 @@ export function* updateGenerator<T, TContext>(
       left,
       right,
       bottom,
-      topLeft: topLeft == undefined ? tree.topLeft : topLeft.result(),
-      topRight: topRight == undefined ? tree.topRight : topRight.result(),
-      bottomLeft: bottomLeft == undefined ? tree.bottomLeft : bottomLeft.result(),
-      bottomRight: bottomRight == undefined ? tree.bottomRight : bottomRight.result()
+      topLeft,
+      topRight,
+      bottomLeft,
+      bottomRight
     }
   }
 }

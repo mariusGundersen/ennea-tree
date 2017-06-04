@@ -50,6 +50,29 @@ test('data changed second time', t => {
   t.is(result.data, 'new');
 });
 
+test('data changed back to original value', t => {
+  const tree = {
+    ...createNode(1),
+    data: 'old'
+  };
+  const updater = update(tree, (old, ctx, pos) => ctx);
+  updater.update({top: 0, left: 0}, 'new');
+  updater.update({top: 0, left: 0}, 'old');
+  const result = updater.result();
+  t.is(tree, result);
+});
+
+test('data changed but unchanged returns true', t => {
+  const tree = {
+    ...createNode(1),
+    data: 'old'
+  };
+  const updater = update(tree, (old, ctx, pos) => ctx, () => true);
+  updater.update({top: 0, left: 0}, 'new');
+  const result = updater.result();
+  t.is(tree, result);
+});
+
 test('convenient result', t => {
   let data = 0;
   const tree = {
@@ -302,6 +325,41 @@ test('center', t => {
   t.is(result.center.data, 'new');
 });
 
+test('center changed back to original value', t => {
+  const tree = {
+    ...createNode(4),
+    center: {
+      top: 1,
+      left: 1,
+      right: 3,
+      bottom: 3,
+      data: 'old'
+    }
+  };
+  const updater = update(tree, (old, ctx, pos) => ctx);
+  updater.update({top: 2, left: 2}, 'new');
+  updater.update({top: 2, left: 2}, 'old');
+  const result = updater.result();
+  t.is(tree, result);
+});
+
+test('center changed but unchanged returns true', t => {
+  const tree = {
+    ...createNode(4),
+    center: {
+      top: 1,
+      left: 1,
+      right: 3,
+      bottom: 3,
+      data: 'old'
+    }
+  };
+  const updater = update(tree, (old, ctx, pos) => ctx, () => true);
+  updater.update({top: 2, left: 2}, 'new');
+  const result = updater.result();
+  t.is(tree, result);
+});
+
 test('top', t => {
   t.plan(7);
   const tree = {
@@ -327,4 +385,39 @@ test('top', t => {
   t.not(result, null);
   t.not(tree, result);
   t.is(result.top[0].data, 'new');
+});
+
+test('top changed back to original value', t => {
+  const tree = {
+    ...createNode(4),
+    top: [{
+      top: 0,
+      left: 1,
+      right: 3,
+      bottom: 2,
+      data: 'old'
+    }]
+  };
+  const updater = update(tree, (old, ctx, pos) => ctx);
+  updater.update({top: 1, left: 2}, 'new');
+  updater.update({top: 1, left: 2}, 'old');
+  const result = updater.result();
+  t.is(tree, result);
+});
+
+test('top changed but unchanged returns true', t => {
+  const tree = {
+    ...createNode(4),
+    top: [{
+      top: 0,
+      left: 1,
+      right: 3,
+      bottom: 2,
+      data: 'old'
+    }]
+  };
+  const updater = update(tree, (old, ctx, pos) => ctx, () => true);
+  updater.update({top: 1, left: 2}, 'new');
+  const result = updater.result();
+  t.is(tree, result);
 });
