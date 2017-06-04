@@ -128,16 +128,16 @@ export function* updateGenerator<T, TContext>(
             data: getData(t.data, change.context, {top: change.area.top - t.top, left: change.area.left - t.left})
           } : t);
       }else if(change.area.top < halfSize && change.area.left < halfSize){
-        topLeftUpdater = topLeftUpdater || update(tree.topLeft, getData);
+        topLeftUpdater = topLeftUpdater || update(tree.topLeft, getData, unchanged);
         topLeftUpdater.update({top: change.area.top, left: change.area.left}, change.context);
       }else if(change.area.top < halfSize && change.area.left >= halfSize){
-        topRightUpdater = topRightUpdater || update(tree.topRight, getData);
+        topRightUpdater = topRightUpdater || update(tree.topRight, getData, unchanged);
         topRightUpdater.update({top: change.area.top, left: change.area.left - halfSize}, change.context);
       }else if(change.area.top >= halfSize && change.area.left < halfSize){
-        bottomLeftUpdater = bottomLeftUpdater || update(tree.bottomLeft, getData);
+        bottomLeftUpdater = bottomLeftUpdater || update(tree.bottomLeft, getData, unchanged);
         bottomLeftUpdater.update({top: change.area.top - halfSize, left: change.area.left}, change.context);
       }else if(change.area.top >= halfSize && change.area.left >= halfSize){
-        bottomRightUpdater = bottomRightUpdater || update(tree.bottomRight, getData);
+        bottomRightUpdater = bottomRightUpdater || update(tree.bottomRight, getData, unchanged);
         bottomRightUpdater.update({top: change.area.top - halfSize, left: change.area.left - halfSize}, change.context);
       }
     }

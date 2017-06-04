@@ -421,3 +421,18 @@ test('top changed but unchanged returns true', t => {
   const result = updater.result();
   t.is(tree, result);
 });
+
+
+test('topLeft changed but unchanged returns true', t => {
+  const tree = {
+    ...createNode(2),
+    topLeft: {
+      ...createNode(1),
+      data: 'old'
+    }
+  };
+  const updater = update(tree, (old, ctx, pos) => ctx, () => true);
+  updater.update({top: 0, left: 0}, 'new');
+  const result = updater.result();
+  t.is(tree.topLeft, result.topLeft);
+});
