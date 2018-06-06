@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./lib",
+    "outDir": "./es",
     "allowJs": false,
     "strictNullChecks": true,
     "noImplicitAny": true,
@@ -11,10 +11,11 @@
     "sourceMap": true,
     "inlineSourceMap": false,
     "inlineSources": true,
-    "declaration": true
+    "declaration": true,
+    "declarationMap": true
   },
   "include": [
-    "./src/*.ts"
+    "./ts/*.ts"
   ],
   "compileOnSave": true
 }

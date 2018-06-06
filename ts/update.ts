@@ -57,7 +57,7 @@ export function* updateGenerator<T, TContext>(
 
   if(tree == undefined){
     let change;
-    while(change = yield);
+    while(change = yield tree as any as Node<T>);
     return undefined;
   }
 
@@ -65,7 +65,7 @@ export function* updateGenerator<T, TContext>(
     let data = tree.data;
     let change = undefined;
     let changed = false;
-    while(change = yield){
+    while(change = yield tree){
       changed = true;
       data = getData(data, change.context, {top: 0, left: 0});
     }
@@ -95,7 +95,7 @@ export function* updateGenerator<T, TContext>(
     let bottomRightUpdater = undefined;
     let rawChange : BoxContext<TContext> | undefined = undefined;
     let changed = false;
-    while(rawChange = yield){
+    while(rawChange = yield tree){
       changed = true;
       const change = rawChange;
       if(center != undefined && intersect(change.area, center)){

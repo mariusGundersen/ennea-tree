@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import intersect from '../lib/intersect.js';
+import intersect from '../es/intersect.js';
 
 test('null', t => {
   t.false(intersect(null, box(0,0,1,1)));

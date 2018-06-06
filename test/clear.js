@@ -1,7 +1,7 @@
 import test from 'ava';
 
-import clear from '../lib/clear.js';
-import createNode from '../lib/createNode.js';
+import clear from '../es/clear.js';
+import createNode from '../es/createNode.js';
 
 test('data', t => {
   const tree = {size:5, data: 'hello'};

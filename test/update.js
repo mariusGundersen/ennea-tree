@@ -1,7 +1,7 @@
 import test from 'ava';
 
-import createNode from '../lib/createNode.js';
-import update from '../lib/update.js';
+import createNode from '../es/createNode.js';
+import update from '../es/update.js';
 
 test('null', t => {
   const updater = update(undefined, undefined);
