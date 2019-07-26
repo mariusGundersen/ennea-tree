@@ -231,7 +231,7 @@ test('clear bottom', t => {
     }]);
 });
 
-test('clear one of two vertical', t => {
+test('clear one of two vertical, top', t => {
   const tree = {
     ...createNode(2),
     topLeft: {
@@ -257,7 +257,7 @@ test('clear one of two vertical', t => {
   }]);
 });
 
-test('clear one of two horizontal', t => {
+test('clear one of two horizontal, left', t => {
   const tree = {
     ...createNode(2),
     topLeft: {
@@ -283,7 +283,7 @@ test('clear one of two horizontal', t => {
   }]);
 });
 
-test('clear one of two vertical', t => {
+test('clear one of two vertical, bottom', t => {
   const tree = {
     ...createNode(2),
     topLeft: {
@@ -309,7 +309,7 @@ test('clear one of two vertical', t => {
   }]);
 });
 
-test('clear one of two horizontal', t => {
+test('clear one of two horizontal, right', t => {
   const tree = {
     ...createNode(2),
     topLeft: {
@@ -390,7 +390,7 @@ test('clear nested top', t => {
     }]);
 });
 
-test('clear left', t => {
+test('clear left, large', t => {
   const tree = {
     ...createNode(8),
     bottomRight: {
@@ -417,7 +417,7 @@ test('clear left', t => {
     }]);
 });
 
-test('clear right', t => {
+test('clear right, right', t => {
   const tree = {
     ...createNode(8),
     bottomRight: {
@@ -444,7 +444,7 @@ test('clear right', t => {
     }]);
 });
 
-test('clear bottom', t => {
+test('clear bottom, large', t => {
   const tree = {
     ...createNode(8),
     bottomRight: {
