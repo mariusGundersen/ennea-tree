@@ -1,3 +1,4 @@
-test
+**/*.test.*
 .*
-yarn.lock
+tsconfig.json
+readme.md

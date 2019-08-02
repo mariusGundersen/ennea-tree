@@ -51,6 +51,9 @@
     "extensions": [
       "ts"
     ],
+    "files": [
+      "./ts/**/*.test.ts"
+    ],
     "require": [
       "esm",
       "ts-node/register"

@@ -1,11 +1,11 @@
 import test from 'ava';
 
-import setUnsafe from '../es/setUnsafe.js';
-import createNode from '../es/createNode.js';
+import setUnsafe from './setUnsafe';
+import createNode from './createNode';
 
 test('setUnsafe data', t => {
   const initialTree = createNode(1);
-  const tree = setUnsafe(initialTree, 'test', coords(0,0));
+  const tree = setUnsafe(initialTree, 'test', coords(0, 0));
 
   t.not(initialTree, tree);
   t.is(tree.data, 'test');
@@ -13,38 +13,38 @@ test('setUnsafe data', t => {
 
 test('setUnsafe topLeft data', t => {
   const initialTree = createNode(2);
-  const tree = setUnsafe(initialTree, 'test', coords(0,0));
+  const tree = setUnsafe(initialTree, 'test', coords(0, 0));
 
   t.not(initialTree, tree);
   t.falsy(tree.data);
-  t.is(tree.topLeft.data, 'test');
+  t.is(tree.topLeft!.data, 'test');
 });
 
 test('setUnsafe topRight data', t => {
   const initialTree = createNode(2);
-  const tree = setUnsafe(initialTree, 'test', coords(1,0));
+  const tree = setUnsafe(initialTree, 'test', coords(1, 0));
 
   t.not(initialTree, tree);
   t.falsy(tree.data);
-  t.is(tree.topRight.data, 'test');
+  t.is(tree.topRight!.data, 'test');
 });
 
 test('setUnsafe bottomLeft data', t => {
   const initialTree = createNode(2);
-  const tree = setUnsafe(initialTree, 'test', coords(0,1));
+  const tree = setUnsafe(initialTree, 'test', coords(0, 1));
 
   t.not(initialTree, tree);
   t.falsy(tree.data);
-  t.is(tree.bottomLeft.data, 'test');
+  t.is(tree.bottomLeft!.data, 'test');
 });
 
 test('setUnsafe bottomRight data', t => {
   const initialTree = createNode(2);
-  const tree = setUnsafe(initialTree, 'test', coords(1,1));
+  const tree = setUnsafe(initialTree, 'test', coords(1, 1));
 
   t.not(initialTree, tree);
   t.falsy(tree.data);
-  t.is(tree.bottomRight.data, 'test');
+  t.is(tree.bottomRight!.data, 'test');
 });
 
 test('setUnsafe center data', t => {
@@ -53,7 +53,7 @@ test('setUnsafe center data', t => {
 
   t.not(initialTree, tree);
   t.falsy(tree.data);
-  t.is(tree.center.data, 'test');
+  t.is(tree.center!.data, 'test');
 });
 
 test('setUnsafe top data', t => {
@@ -102,7 +102,7 @@ test('setUnsafe large center data', t => {
 
   t.not(initialTree, tree);
   t.falsy(tree.data);
-  t.is(tree.center.data, 'test');
+  t.is(tree.center!.data, 'test');
 });
 
 test('setUnsafe top data twice', t => {
@@ -157,7 +157,7 @@ test('setUnsafe bottom data twice', t => {
   t.is(tree.bottom[1].data, 'test2');
 });
 
-function coords(left, top, width=1, height=1){
+function coords(left: number, top: number, width = 1, height = 1) {
   return {
     top,
     left,

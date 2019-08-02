@@ -1,11 +1,11 @@
 import test from 'ava';
 
-import createNode from '../es/createNode.js';
-import update from '../es/update.js';
+import createNode from './createNode';
+import update from './update';
 
 test('null', t => {
-  const updater = update(undefined, undefined);
-  updater.update({top:0, left:0});
+  const updater = update(undefined, () => undefined);
+  updater.update({ top: 0, left: 0 }, undefined);
   t.is(updater.result(), undefined);
 });
 
@@ -18,11 +18,11 @@ test('data', t => {
   const context = {};
   const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
-    t.deepEqual(pos, {top: 0, left: 0});
+    t.deepEqual(pos, { top: 0, left: 0 });
     t.is(ctx, context);
     return 'new';
   });
-  updater.update({top: 0, left: 0}, context);
+  updater.update({ top: 0, left: 0 }, context);
   const result = updater.result();
   t.not(result, null);
   t.not(tree, result);
@@ -33,17 +33,17 @@ test('data changed second time', t => {
   t.plan(7);
   let data = 'old';
   const tree = {
-    ...createNode(1),
+    ...createNode<string>(1),
     data
   };
-  const updater = update(tree, (old, ctx, pos) => {
+  const updater = update(tree, (old, ctx: undefined, pos) => {
     t.is(old, data);
-    t.deepEqual(pos, {top: 0, left: 0});
+    t.deepEqual(pos, { top: 0, left: 0 });
     data = 'new';
     return data;
   });
-  updater.update({top: 0, left: 0});
-  updater.update({top: 0, left: 0});
+  updater.update({ top: 0, left: 0 }, undefined);
+  updater.update({ top: 0, left: 0 }, undefined);
   const result = updater.result();
   t.not(result, null);
   t.not(tree, result);
@@ -56,8 +56,8 @@ test('data changed back to original value', t => {
     data: 'old'
   };
   const updater = update(tree, (old, ctx, pos) => ctx);
-  updater.update({top: 0, left: 0}, 'new');
-  updater.update({top: 0, left: 0}, 'old');
+  updater.update({ top: 0, left: 0 }, 'new');
+  updater.update({ top: 0, left: 0 }, 'old');
   const result = updater.result();
   t.is(tree, result);
 });
@@ -68,7 +68,7 @@ test('data changed but unchanged returns true', t => {
     data: 'old'
   };
   const updater = update(tree, (old, ctx, pos) => ctx, () => true);
-  updater.update({top: 0, left: 0}, 'new');
+  updater.update({ top: 0, left: 0 }, 'new');
   const result = updater.result();
   t.is(tree, result);
 });
@@ -76,15 +76,15 @@ test('data changed but unchanged returns true', t => {
 test('convenient result', t => {
   let data = 0;
   const tree = {
-    ...createNode(1),
+    ...createNode<number>(1),
     data
   };
-  const updater = update(tree, old => old+1);
+  const updater = update(tree, old => old + 1);
   const result = updater.result([
-    {area: {top: 0, left: 0}},
-    {area: {top: 0, left: 0}},
-    {area: {top: 0, left: 0}}
-  ]);
+    { area: { top: 0, left: 0 } },
+    { area: { top: 0, left: 0 } },
+    { area: { top: 0, left: 0 } }
+  ] as any);
   t.not(result, null);
   t.not(tree, result);
   t.is(result.data, 3);
@@ -102,14 +102,14 @@ test('topLeft', t => {
   const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
     t.is(ctx, context);
-    t.deepEqual(pos, {top: 0, left: 0});
+    t.deepEqual(pos, { top: 0, left: 0 });
     return 'new';
   });
-  updater.update({top: 0, left: 0}, context);
+  updater.update({ top: 0, left: 0 }, context);
   const result = updater.result();
   t.not(tree, result);
   t.not(tree.topLeft, result.topLeft);
-  t.is(result.topLeft.data, 'new');
+  t.is(result.topLeft!.data, 'new');
 });
 
 test('topRight', t => {
@@ -124,14 +124,14 @@ test('topRight', t => {
   const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
     t.is(ctx, context);
-    t.deepEqual(pos, {top: 0, left: 0});
+    t.deepEqual(pos, { top: 0, left: 0 });
     return 'new';
   });
-  updater.update({top: 0, left: 1}, context);
+  updater.update({ top: 0, left: 1 }, context);
   const result = updater.result();
   t.not(tree, result);
   t.not(tree.topRight, result.topRight);
-  t.is(result.topRight.data, 'new');
+  t.is(result.topRight!.data, 'new');
 });
 
 test('bottomLeft', t => {
@@ -146,14 +146,14 @@ test('bottomLeft', t => {
   const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
     t.is(ctx, context);
-    t.deepEqual(pos, {top: 0, left: 0});
+    t.deepEqual(pos, { top: 0, left: 0 });
     return 'new';
   });
-  updater.update({top: 1, left: 0}, context);
+  updater.update({ top: 1, left: 0 }, context);
   const result = updater.result();
   t.not(tree, result);
   t.not(tree.bottomLeft, result.bottomLeft);
-  t.is(result.bottomLeft.data, 'new');
+  t.is(result.bottomLeft!.data, 'new');
 });
 
 test('bottomRight', t => {
@@ -168,14 +168,14 @@ test('bottomRight', t => {
   const updater = update(tree, (old, ctx, pos) => {
     t.is(old, 'old');
     t.is(ctx, context);
-    t.deepEqual(pos, {top: 0, left: 0});
+    t.deepEqual(pos, { top: 0, left: 0 });
     return 'new';
   });
-  updater.update({top: 1, left: 1}, context);
+  updater.update({ top: 1, left: 1 }, context);
   const result = updater.result();
   t.not(tree, result);
   t.not(tree.bottomRight, result.bottomRight);
-  t.is(result.bottomRight.data, 'new');
+  t.is(result.bottomRight!.data, 'new');
 });
 
 test('topLeft only', t => {
@@ -199,7 +199,7 @@ test('topLeft only', t => {
     }
   };
   const updater = update(tree, _ => 'new');
-  updater.update({top: 0, left: 0});
+  updater.update({ top: 0, left: 0 }, undefined);
   const result = updater.result();
   t.not(tree, result);
   t.not(tree.topLeft, result.topLeft);
@@ -229,7 +229,7 @@ test('topRight only', t => {
     }
   };
   const updater = update(tree, _ => 'new');
-  updater.update({top: 0, left: 1});
+  updater.update({ top: 0, left: 1 }, undefined);
   const result = updater.result();
   t.not(tree, result);
   t.is(tree.topLeft, result.topLeft);
@@ -259,7 +259,7 @@ test('bottomLeft only', t => {
     }
   };
   const updater = update(tree, _ => 'new');
-  updater.update({top: 1, left: 0});
+  updater.update({ top: 1, left: 0 }, undefined);
   const result = updater.result();
   t.not(tree, result);
   t.is(tree.topLeft, result.topLeft);
@@ -289,7 +289,7 @@ test('bottomRight only', t => {
     }
   };
   const updater = update(tree, _ => 'new');
-  updater.update({top: 1, left: 1});
+  updater.update({ top: 1, left: 1 }, undefined);
   const result = updater.result();
   t.not(tree, result);
   t.is(tree.topLeft, result.topLeft);
@@ -318,11 +318,11 @@ test('center', t => {
     t.is(ctx, context);
     return 'new';
   });
-  updater.update({top: 2, left: 2}, context);
+  updater.update({ top: 2, left: 2 }, context);
   const result = updater.result();
   t.not(result, null);
   t.not(tree, result);
-  t.is(result.center.data, 'new');
+  t.is(result.center!.data, 'new');
 });
 
 test('center changed back to original value', t => {
@@ -337,8 +337,8 @@ test('center changed back to original value', t => {
     }
   };
   const updater = update(tree, (old, ctx, pos) => ctx);
-  updater.update({top: 2, left: 2}, 'new');
-  updater.update({top: 2, left: 2}, 'old');
+  updater.update({ top: 2, left: 2 }, 'new');
+  updater.update({ top: 2, left: 2 }, 'old');
   const result = updater.result();
   t.is(tree, result);
 });
@@ -355,7 +355,7 @@ test('center changed but unchanged returns true', t => {
     }
   };
   const updater = update(tree, (old, ctx, pos) => ctx, () => true);
-  updater.update({top: 2, left: 2}, 'new');
+  updater.update({ top: 2, left: 2 }, 'new');
   const result = updater.result();
   t.is(tree, result);
 });
@@ -380,7 +380,7 @@ test('top', t => {
     t.is(ctx, context);
     return 'new';
   });
-  updater.update({top: 1, left: 2}, context);
+  updater.update({ top: 1, left: 2 }, context);
   const result = updater.result();
   t.not(result, null);
   t.not(tree, result);
@@ -399,8 +399,8 @@ test('top changed back to original value', t => {
     }]
   };
   const updater = update(tree, (old, ctx, pos) => ctx);
-  updater.update({top: 1, left: 2}, 'new');
-  updater.update({top: 1, left: 2}, 'old');
+  updater.update({ top: 1, left: 2 }, 'new');
+  updater.update({ top: 1, left: 2 }, 'old');
   const result = updater.result();
   t.is(tree, result);
 });
@@ -417,7 +417,7 @@ test('top changed but unchanged returns true', t => {
     }]
   };
   const updater = update(tree, (old, ctx, pos) => ctx, () => true);
-  updater.update({top: 1, left: 2}, 'new');
+  updater.update({ top: 1, left: 2 }, 'new');
   const result = updater.result();
   t.is(tree, result);
 });
@@ -432,7 +432,7 @@ test('topLeft changed but unchanged returns true', t => {
     }
   };
   const updater = update(tree, (old, ctx, pos) => ctx, () => true);
-  updater.update({top: 0, left: 0}, 'new');
+  updater.update({ top: 0, left: 0 }, 'new');
   const result = updater.result();
   t.is(tree.topLeft, result.topLeft);
 });

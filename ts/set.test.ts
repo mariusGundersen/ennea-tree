@@ -1,7 +1,7 @@
 import test from 'ava';
 
-import set from '../es/set.js';
-import createNode from '../es/createNode.js';
+import set from './set';
+import createNode from './createNode';
 
 test('change center size should fail', t => {
   const initialTree = createNode(8);
@@ -11,7 +11,7 @@ test('change center size should fail', t => {
   t.not(initialTree, tempTree);
   t.is(tempTree, tree);
   t.falsy(tree.data);
-  t.is(tree.center.data, 'test1');
+  t.is(tree.center!.data, 'test1');
 });
 
 test('set center intersecting with top should fail', t => {
@@ -103,7 +103,7 @@ test('set top intersecting with center should fail', t => {
   t.is(tempTree, tree);
   t.falsy(tree.data);
   t.is(tree.top.length, 0);
-  t.is(tree.center.data, 'test1');
+  t.is(tree.center!.data, 'test1');
 });
 
 test('set left intersecting twice should fail', t => {
@@ -151,7 +151,7 @@ test('set left intersecting with center should fail', t => {
   t.is(tempTree, tree);
   t.falsy(tree.data);
   t.is(tree.left.length, 0);
-  t.is(tree.center.data, 'test1');
+  t.is(tree.center!.data, 'test1');
 });
 
 test('set right intersecting twice should fail', t => {
@@ -199,7 +199,7 @@ test('set right intersecting with center should fail', t => {
   t.is(tempTree, tree);
   t.falsy(tree.data);
   t.is(tree.right.length, 0);
-  t.is(tree.center.data, 'test1');
+  t.is(tree.center!.data, 'test1');
 });
 
 test('set bottom intersecting twice should fail', t => {
@@ -247,10 +247,10 @@ test('set bottom intersecting with center should fail', t => {
   t.is(tempTree, tree);
   t.falsy(tree.data);
   t.is(tree.bottom.length, 0);
-  t.is(tree.center.data, 'test1');
+  t.is(tree.center!.data, 'test1');
 });
 
-function coords(left, top, width=1, height=1){
+function coords(left: number, top: number, width = 1, height = 1) {
   return {
     top,
     left,

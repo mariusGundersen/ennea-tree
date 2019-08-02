@@ -1,6 +1,6 @@
-import { Node, BoxedData } from './types';
+import { Node } from './types';
 
-export default function createNode<T>(size=1) : Node<T>{
+export default function createNode<T>(size = 1): Node<T> {
   return {
     size,
     data: undefined,

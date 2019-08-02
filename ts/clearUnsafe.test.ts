@@ -1,12 +1,13 @@
 import test from 'ava';
 
-import clearUnsafe from '../es/clearUnsafe.js';
-import createNode from '../es/createNode.js';
+import clearUnsafe from './clearUnsafe';
+import createNode from './createNode';
+import { Node, BoxArea } from './types';
 
 test('data', t => {
-  const tree = {data: 'hello'};
-  const area = {};
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const tree = { data: 'hello' } as Node<string>;
+  const area = {} as BoxArea;
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
     data: 'hello',
@@ -26,7 +27,7 @@ test('clear miss', t => {
     }
   };
   const area = coords(8, 0);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, tree);
   t.deepEqual(cleared, []);
 });
@@ -40,7 +41,7 @@ test('clear topLeft', t => {
     }
   };
   const area = coords(0, 0);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
     data: 'hello',
@@ -60,7 +61,7 @@ test('clear topRight', t => {
     }
   };
   const area = coords(1, 0);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
     data: 'hello',
@@ -80,7 +81,7 @@ test('clear bottomLeft', t => {
     }
   };
   const area = coords(0, 1);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
     data: 'hello',
@@ -100,7 +101,7 @@ test('clear bottomRight', t => {
     }
   };
   const area = coords(1, 1);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
     data: 'hello',
@@ -124,15 +125,15 @@ test('clear center', t => {
   };
 
   const area = coords(0, 0);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
-      top: 0,
-      left: 0,
-      width: 2,
-      height: 2,
-      data: 'hello'
-    }]);
+    top: 0,
+    left: 0,
+    width: 2,
+    height: 2,
+    data: 'hello'
+  }]);
 });
 
 test('clear top', t => {
@@ -148,15 +149,15 @@ test('clear top', t => {
   };
 
   const area = coords(0, 0);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
-      top: 0,
-      left: 0,
-      width: 2,
-      height: 1,
-      data: 'hello'
-    }]);
+    top: 0,
+    left: 0,
+    width: 2,
+    height: 1,
+    data: 'hello'
+  }]);
 });
 
 test('clear left', t => {
@@ -172,15 +173,15 @@ test('clear left', t => {
   };
 
   const area = coords(0, 0);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
-      top: 0,
-      left: 0,
-      width: 1,
-      height: 2,
-      data: 'hello'
-    }]);
+    top: 0,
+    left: 0,
+    width: 1,
+    height: 2,
+    data: 'hello'
+  }]);
 });
 
 test('clear right', t => {
@@ -196,15 +197,15 @@ test('clear right', t => {
   };
 
   const area = coords(1, 0);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
-      top: 0,
-      left: 1,
-      width: 1,
-      height: 2,
-      data: 'hello'
-    }]);
+    top: 0,
+    left: 1,
+    width: 1,
+    height: 2,
+    data: 'hello'
+  }]);
 });
 
 test('clear bottom', t => {
@@ -220,15 +221,15 @@ test('clear bottom', t => {
   };
 
   const area = coords(1, 1);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
-      top: 1,
-      left: 0,
-      width: 2,
-      height: 1,
-      data: 'hello'
-    }]);
+    top: 1,
+    left: 0,
+    width: 2,
+    height: 1,
+    data: 'hello'
+  }]);
 });
 
 test('clear one of two vertical, top', t => {
@@ -245,9 +246,9 @@ test('clear one of two vertical, top', t => {
   };
 
   const area = coords(0, 0);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.not(result, undefined);
-  t.is(result.bottomLeft.data, 'bottom');
+  t.is(result!.bottomLeft!.data, 'bottom');
   t.deepEqual(cleared, [{
     data: 'top',
     top: 0,
@@ -271,9 +272,9 @@ test('clear one of two horizontal, left', t => {
   };
 
   const area = coords(0, 0);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.not(result, undefined);
-  t.is(result.topRight.data, 'right');
+  t.is(result!.topRight!.data, 'right');
   t.deepEqual(cleared, [{
     data: 'left',
     top: 0,
@@ -297,9 +298,9 @@ test('clear one of two vertical, bottom', t => {
   };
 
   const area = coords(0, 1);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.not(result, undefined);
-  t.is(result.topLeft.data, 'top');
+  t.is(result!.topLeft!.data, 'top');
   t.deepEqual(cleared, [{
     data: 'bottom',
     top: 1,
@@ -323,9 +324,9 @@ test('clear one of two horizontal, right', t => {
   };
 
   const area = coords(1, 0);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.not(result, undefined);
-  t.is(result.topLeft.data, 'left');
+  t.is(result!.topLeft!.data, 'left');
   t.deepEqual(cleared, [{
     data: 'right',
     top: 0,
@@ -350,16 +351,16 @@ test('clear nested center', t => {
     }
   };
 
-  const area = coords(6,6);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const area = coords(6, 6);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
-      top: 5,
-      left: 5,
-      width: 2,
-      height: 2,
-      data: 'hello'
-    }]);
+    top: 5,
+    left: 5,
+    width: 2,
+    height: 2,
+    data: 'hello'
+  }]);
 });
 
 
@@ -379,15 +380,15 @@ test('clear nested top', t => {
   };
 
   const area = coords(6, 5);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
-      top: 5,
-      left: 5,
-      width: 2,
-      height: 1,
-      data: 'hello'
-    }]);
+    top: 5,
+    left: 5,
+    width: 2,
+    height: 1,
+    data: 'hello'
+  }]);
 });
 
 test('clear left, large', t => {
@@ -406,15 +407,15 @@ test('clear left, large', t => {
   };
 
   const area = coords(5, 6);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
-      top: 5,
-      left: 5,
-      width: 1,
-      height: 2,
-      data: 'hello'
-    }]);
+    top: 5,
+    left: 5,
+    width: 1,
+    height: 2,
+    data: 'hello'
+  }]);
 });
 
 test('clear right, right', t => {
@@ -433,15 +434,15 @@ test('clear right, right', t => {
   };
 
   const area = coords(6, 6);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
-      top: 5,
-      left: 6,
-      width: 1,
-      height: 2,
-      data: 'hello'
-    }]);
+    top: 5,
+    left: 6,
+    width: 1,
+    height: 2,
+    data: 'hello'
+  }]);
 });
 
 test('clear bottom, large', t => {
@@ -460,18 +461,18 @@ test('clear bottom, large', t => {
   };
 
   const area = coords(6, 6);
-  const {tree: result, cleared} = clearUnsafe(tree, area);
+  const { tree: result, cleared } = clearUnsafe(tree, area);
   t.is(result, undefined);
   t.deepEqual(cleared, [{
-      top: 6,
-      left: 5,
-      width: 2,
-      height: 1,
-      data: 'hello'
-    }]);
+    top: 6,
+    left: 5,
+    width: 2,
+    height: 1,
+    data: 'hello'
+  }]);
 });
 
-function coords(left, top, width=1, height=1){
+function coords(left: number, top: number, width = 1, height = 1) {
   return {
     top,
     left,

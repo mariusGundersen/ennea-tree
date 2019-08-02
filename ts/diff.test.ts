@@ -1,11 +1,12 @@
 import test from 'ava';
 
-import diff from '../es/diff.js';
-import set from '../es/set.js';
-import createNode from '../es/createNode.js';
+import diff from './diff';
+import set from './set';
+import createNode from './createNode';
+import { Node, BoxAreaData } from './types';
 
 test('null and null', t => {
-  const result = [...diff(null, null)];
+  const result = [...diff(undefined, undefined)];
   t.is(result.length, 0);
 });
 
@@ -17,13 +18,13 @@ test('same', t => {
 
 test('set empty tree', t => {
   const tree = createNode(1);
-  const result = [...diff(null, tree)];
+  const result = [...diff(undefined, tree)];
   t.is(result.length, 0);
 });
 
 test('clear empty tree', t => {
   const tree = createNode(1);
-  const result = [...diff(tree, null)];
+  const result = [...diff(tree, undefined)];
   t.is(result.length, 0);
 });
 
@@ -97,8 +98,8 @@ test('update data', t => {
 });
 
 test('set and clear deep data', t => {
-  const treeBefore = createTree(4, {data: 'hello', top:1, left: 2});
-  const treeAfter = createTree(4, {data: 'hello', top:2, left: 1});
+  const treeBefore = createTree(4, { data: 'hello', top: 1, left: 2 });
+  const treeAfter = createTree(4, { data: 'hello', top: 2, left: 1 });
   const result = [...diff(treeBefore, treeAfter)];
   t.is(result.length, 2);
   t.deepEqual(result[0], {
@@ -120,14 +121,14 @@ test('set and clear deep data', t => {
 });
 
 test('same big block center', t => {
-  const tree = createTree(4, {data: 'hello', top:1, left: 1, width: 2, height: 2});
+  const tree = createTree(4, { data: 'hello', top: 1, left: 1, width: 2, height: 2 });
   const result = [...diff(tree, tree)];
   t.is(result.length, 0);
 });
 
 test('set big block center', t => {
   const treeBefore = createTree(4);
-  const treeAfter = createTree(4, {data: 'hello', top:1, left: 1, width: 2, height: 2});
+  const treeAfter = createTree(4, { data: 'hello', top: 1, left: 1, width: 2, height: 2 });
   const result = [...diff(treeBefore, treeAfter)];
   t.is(result.length, 1);
   t.deepEqual(result[0], {
@@ -141,7 +142,7 @@ test('set big block center', t => {
 });
 
 test('clear big block center', t => {
-  const treeBefore = createTree(4, {data: 'hello', top:1, left: 1, width: 2, height: 2});
+  const treeBefore = createTree(4, { data: 'hello', top: 1, left: 1, width: 2, height: 2 });
   const treeAfter = createTree(4);
   const result = [...diff(treeBefore, treeAfter)];
   t.is(result.length, 1);
@@ -156,8 +157,8 @@ test('clear big block center', t => {
 });
 
 test('update big block center', t => {
-  const treeBefore = createTree(4, {data: 'hello', top:1, left: 1, width: 2, height: 2});
-  const treeAfter = createTree(4, {data: 'hi', top:1, left: 1, width: 2, height: 2});
+  const treeBefore = createTree(4, { data: 'hello', top: 1, left: 1, width: 2, height: 2 });
+  const treeAfter = createTree(4, { data: 'hi', top: 1, left: 1, width: 2, height: 2 });
   const result = [...diff(treeBefore, treeAfter)];
   t.is(result.length, 1);
   t.deepEqual(result[0], {
@@ -172,8 +173,8 @@ test('update big block center', t => {
 });
 
 test('change big block size center', t => {
-  const treeBefore = createTree(4, {data: 'hello', top:1, left: 1, width: 2, height: 2});
-  const treeAfter = createTree(4, {data: 'hello', top:0, left: 0, width: 4, height: 4});
+  const treeBefore = createTree(4, { data: 'hello', top: 1, left: 1, width: 2, height: 2 });
+  const treeAfter = createTree(4, { data: 'hello', top: 0, left: 0, width: 4, height: 4 });
   const result = [...diff(treeBefore, treeAfter)];
   t.is(result.length, 2);
   t.deepEqual(result[0], {
@@ -195,14 +196,14 @@ test('change big block size center', t => {
 });
 
 test('same big block top', t => {
-  const tree = createTree(4, {data: 'hello', top:0, left: 1, width: 2, height: 1});
+  const tree = createTree(4, { data: 'hello', top: 0, left: 1, width: 2, height: 1 });
   const result = [...diff(tree, tree)];
   t.is(result.length, 0);
 });
 
 test('set big block top', t => {
   const treeBefore = createTree(4);
-  const treeAfter = createTree(4, {data: 'hello', top:0, left: 1, width: 2, height: 1});
+  const treeAfter = createTree(4, { data: 'hello', top: 0, left: 1, width: 2, height: 1 });
   const result = [...diff(treeBefore, treeAfter)];
   t.is(result.length, 1);
   t.deepEqual(result[0], {
@@ -216,7 +217,7 @@ test('set big block top', t => {
 });
 
 test('clear big block top', t => {
-  const treeBefore = createTree(4, {data: 'hello', top:0, left: 1, width: 2, height: 1});
+  const treeBefore = createTree(4, { data: 'hello', top: 0, left: 1, width: 2, height: 1 });
   const treeAfter = createTree(4);
   const result = [...diff(treeBefore, treeAfter)];
   t.is(result.length, 1);
@@ -231,8 +232,8 @@ test('clear big block top', t => {
 });
 
 test('update big block top', t => {
-  const treeBefore = createTree(4, {data: 'hello', top:0, left: 1, width: 2, height: 1});
-  const treeAfter = createTree(4, {data: 'hi', top:0, left: 1, width: 2, height: 1});
+  const treeBefore = createTree(4, { data: 'hello', top: 0, left: 1, width: 2, height: 1 });
+  const treeAfter = createTree(4, { data: 'hi', top: 0, left: 1, width: 2, height: 1 });
   const result = [...diff(treeBefore, treeAfter)];
   t.is(result.length, 1);
   t.deepEqual(result[0], {
@@ -247,8 +248,8 @@ test('update big block top', t => {
 });
 
 test('resize big block top', t => {
-  const treeBefore = createTree(4, {data: 'hello', top:0, left: 1, width: 2, height: 1});
-  const treeAfter = createTree(4, {data: 'hello', top:0, left: 1, width: 2, height: 2});
+  const treeBefore = createTree(4, { data: 'hello', top: 0, left: 1, width: 2, height: 1 });
+  const treeAfter = createTree(4, { data: 'hello', top: 0, left: 1, width: 2, height: 2 });
   const result = [...diff(treeBefore, treeAfter)];
   t.is(result.length, 2);
   t.deepEqual(result[0], {
@@ -269,9 +270,9 @@ test('resize big block top', t => {
   });
 });
 
-function createTree(size, ...data){
-  let tree = createNode(size);
-  for(let entry of data){
+function createTree<T>(size: number, ...data: BoxAreaData<T>[]): Node<T> {
+  let tree = createNode<T>(size);
+  for (let entry of data) {
     tree = set(tree, entry.data, entry);
   }
   return tree;
