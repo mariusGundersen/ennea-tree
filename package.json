@@ -11,7 +11,7 @@
     "tsc": "tsc",
     "compile": "npm run tsc && npm run babel",
     "babel": "babel --source-maps -d js es",
-    "watch": "tsc -w & ava -w",
+    "watch": "ava -w",
     "prepublish": "npm run clean && npm run compile && npm test"
   },
   "repository": {
@@ -35,13 +35,16 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "@babel/register": "^7.5.5",
     "@babel/runtime": "^7.5.5",
     "@types/node": "^10.0.0",
     "ava": "^2.2.0",
+    "esm": "^3.2.25",
     "rimraf": "^2.6.3",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
+  },
+  "peerDependencies": {
+    "@babel/runtime": "^7.5.5"
   },
   "ava": {
     "compileEnhancements": false,
@@ -49,8 +52,8 @@
       "ts"
     ],
     "require": [
-      "ts-node/register",
-      "@babel/register"
+      "esm",
+      "ts-node/register"
     ]
   }
 }
