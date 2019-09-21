@@ -472,6 +472,27 @@ test('clear bottom, large', t => {
   }]);
 });
 
+test('clear bottom, large, conditional', t => {
+  const tree = {
+    ...createNode(8),
+    bottomRight: {
+      ...createNode(4),
+      bottom: [{
+        top: 2,
+        left: 1,
+        right: 3,
+        bottom: 3,
+        data: 'hello'
+      }]
+    }
+  };
+
+  const area = coords(6, 6);
+  const { tree: result, cleared } = clearUnsafe(tree, area, 0, 0, d => d !== 'hello');
+  t.is(result, tree);
+  t.deepEqual(cleared, []);
+});
+
 function coords(left: number, top: number, width = 1, height = 1) {
   return {
     top,

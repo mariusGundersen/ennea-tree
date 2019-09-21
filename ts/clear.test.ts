@@ -11,3 +11,10 @@ test('data', t => {
   const { tree: result } = clear(tree, area);
   t.deepEqual(result, createNode(5));
 });
+
+test('data with condition', t => {
+  const tree = { size: 5, data: 'hello' } as Node<string>;
+  const area = {} as BoxArea;
+  const { tree: result } = clear(tree, area, d => d !== 'hello');
+  t.deepEqual(result, tree);
+});
